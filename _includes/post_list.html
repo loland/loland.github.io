@@ -1,0 +1,39 @@
+{%-if include.category-%}
+  {%-assign posts = site.categories[include.category]-%}  
+{%-else-%}
+  {%-assign posts = site.posts-%}
+{%-endif-%}
+
+{%-if include.limit and posts.size > include.limit-%}
+  {%-assign limit_exceeded = true-%}
+{%-else-%}
+  {%-assign limit_exceeded = false-%}
+{%-endif-%}
+
+{%- if posts.size > 0 -%}
+  <ul>
+    {%- for post in posts reversed limit: include.limit-%}
+    {% assign content = post.content | strip_newlines %}
+
+      {%- if post.categories contains "noclass" -%}
+      <li>
+        <span>{{- post.date | date: site.theme_config.date_format -}} </span>
+        <strong>{{ post.title | downcase }}</strong>
+      </li>
+    {%- elsif content == ""-%}
+      <li>
+        <span>{{- post.date | date: site.theme_config.date_format -}} </span>
+        {{ post.title | downcase }}
+      </li>
+    {%-else-%}
+      <li>
+        <span>{{- post.date | date: site.theme_config.date_format -}} </span>
+          <a href="{{ post.url | relative_url }}">{{ post.title | downcase }}</a>
+      </li>
+    {%-endif-%}
+    {%- endfor -%}
+    {%- if include.show_more and limit_exceeded -%}
+      <li><a href="{{ include.show_more_url }}">{{ include.show_more_text | default: "Show more..." }}</a></li>
+    {%- endif -%}
+  </ul>
+{%- endif -%}
