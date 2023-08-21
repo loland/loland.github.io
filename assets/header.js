@@ -1,8 +1,15 @@
 let title = document.getElementsByClassName('site-title')[0];
-let word_list = [title.innerHTML, title.getAttribute('alt')];
+let base = title.getAttribute('base');
+let alt = base + title.getAttribute('alt')
+
+title.innerHTML = base + title.innerHTML;
+
+let word_list = [title.innerHTML, alt];
+title.innerHTML = title.innerHTML + '<span id="bar">|</span>';
 let word = word_list[0];
 
-title.innerHTML = word + '<span id="bar">|</span>';
+
+
 
 let backspace = true;
 let currentWord = word;
@@ -23,7 +30,7 @@ function type() {
         return
     }
 
-    if (currentWord.length == 0) {
+    if (currentWord.length == base.length) {
         backspace = false;
         if (word == word_list[0]) {
             word = word_list[1];
@@ -51,4 +58,6 @@ function type() {
     }
 }
 
-setInterval(type, 200);
+setTimeout(() => {
+    setInterval(type, 200);
+}, 2000)
