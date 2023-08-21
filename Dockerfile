@@ -68,3 +68,5 @@ RUN rbenv install ${RUBY_VERSION} \
 # "       use this line instead:"
 # "       RUN gem install jekyll -v '~>3.9'"
 RUN gem install jekyll -v '3.9.3'
+
+# bundle exec jekyll serve --livereload
