@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "title"
+title:  "Reversing Wild Powershell Malware"
 date:   2023-08-21 10:16:43 +0000
 categories: jekyll update
 ---
