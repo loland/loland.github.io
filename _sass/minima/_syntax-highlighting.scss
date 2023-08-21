@@ -2,11 +2,11 @@
  * Syntax highlighting styles
  */
 .highlight {
-  background: #fff;
+  // background: #5c5757;
   @extend %vertical-rhythm;
 
   .highlighter-rouge & {
-    background: #eef;
+    background: rgb(85, 85, 88);
   }
 
   .c     { color: #998; font-style: italic } // Comment
