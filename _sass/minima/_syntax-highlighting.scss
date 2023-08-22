@@ -42,10 +42,10 @@
   .no    { color: #008080 } // Name.Constant
   .ni    { color: #800080 } // Name.Entity
   .ne    { color: #900; font-weight: bold } // Name.Exception
-  .nf    { color: #900; font-weight: bold } // Name.Function
+  .nf    { color: rgb(218, 117, 117); font-weight: bold } // Name.Function
   .nn    { color: #555 } // Name.Namespace
-  .nt    { color: #000080 } // Name.Tag
-  .nv    { color: #008080 } // Name.Variable
+  .nt    { color: #45a75e } // Name.Tag
+  .nv    { color: #6c6ad1 } // Name.Variable
   .ow    { font-weight: bold } // Operator.Word
   .w     { color: #bbb } // Text.Whitespace
   .mf    { color: #099 } // Literal.Number.Float
@@ -61,7 +61,7 @@
   .si    { color: #d14 } // Literal.String.Interpol
   .sx    { color: #d14 } // Literal.String.Other
   .sr    { color: #009926 } // Literal.String.Regex
-  .s1    { color: #d14 } // Literal.String.Single
+  .s1    { color: rgb(101, 175, 165) } // Literal.String.Single
   .ss    { color: #990073 } // Literal.String.Symbol
   .bp    { color: #999 } // Name.Builtin.Pseudo
   .vc    { color: #008080 } // Name.Variable.Class
