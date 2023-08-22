@@ -27,6 +27,10 @@ ul {
     margin-top: 20px;
 }
 
+.sidebar-hidden {
+    display: none;
+}
+
 .sidebar {
     position: fixed;
     top: 0;
