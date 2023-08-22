@@ -16,7 +16,7 @@ const sidebarBtn = document.querySelector(".bx-menu");
 // });
 
 function adjust_sidebar() {
-    let sidebar_width = sidebar.getBoundingClientRect().width; 
+    let sidebar_width = 260; 
     let body_x = body.getBoundingClientRect().x;
     let is_closed = sidebar.classList.contains('close');
     if (body_x <= sidebar_width && !is_closed) {
