@@ -1,0 +1,23 @@
+.post-meta {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    color: #ddd4d4;
+    margin-bottom: -25px;
+}
+
+.post-link {
+    color: rgb(171, 83, 151);
+}
+
+a:visited {
+    color:rgb(163, 135, 179);
+}
+
+hr {
+    background-color: #ddd4d4;
+}
+
+.post-list > li {
+    position: relative;
+}
