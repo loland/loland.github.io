@@ -5,6 +5,7 @@
   <title>Side Navigation Bar</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/assets/sidebar.css">
+  <script src="/assets/sidebar.js" defer></script>
 </head>
 
 <body>
@@ -30,23 +31,5 @@
     </ul>
   </div>
 </body>
-
-<script>
-  const arrows = document.querySelectorAll(".arrow");
-
-arrows.forEach((arrow) => {
-  arrow.addEventListener("click", (e) => {
-    const arrowParent = e.target.closest(".arrow").parentElement.parentElement;
-    arrowParent.classList.toggle("showMenu");
-  });
-  });
-
-  const sidebar = document.querySelector(".sidebar");
-  const sidebarBtn = document.querySelector(".bx-menu");
-
-  sidebarBtn.addEventListener("click", () => {
-    sidebar.classList.toggle("close");
-  });
-</script>
 
 </html>
