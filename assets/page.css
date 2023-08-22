@@ -1,3 +1,11 @@
 #post-content {
-    overflow:hidden;
+    overflow: hidden;
+}
+
+a {
+    color: rgb(171, 83, 151);
+}
+
+a:visited {
+    color:rgb(163, 135, 179);
 }
