@@ -27,3 +27,4 @@ function adjust_sidebar() {
 }
 
 window.addEventListener("resize", adjust_sidebar);
+adjust_sidebar();
