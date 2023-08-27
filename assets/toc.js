@@ -22,9 +22,6 @@ const HEADINGS = ['H2', 'H3', 'H4', 'H5', 'H6'];
 let content = document.getElementsByClassName('post-content')[0];
 let content_children = content.childNodes;
 
-let base_ul = document.createElement('ul');
-base_ul.classList.add('toc-ul');
-
 let h_array = [];
 for (let i = 0; i < content_children.length; i ++) {
     let tag = content_children[i].tagName
@@ -33,7 +30,8 @@ for (let i = 0; i < content_children.length; i ++) {
     }
 }
 
-
+let base_ul = document.createElement('ul');
+base_ul.classList.add('toc-ul');
 
 let new_ul = null;
 for (let i = 0; i < h_array.length; i ++) {
@@ -61,18 +59,23 @@ for (let i = 0; i < h_array.length; i ++) {
 
     if (current_h == previous_h && new_ul == null) {
         base_ul.appendChild(new_li);
+        console.log('b1')
 
     } else if (current_h == previous_h && new_ul != null) {
         new_ul.appendChild(new_li);
+        console.log('b2')
 
     } else if (current_h < previous_h) {
+        base_ul.appendChild(new_ul);
         base_ul.appendChild(new_li);
         new_ul = null;
+        console.log('b3')
         
     } else if (current_h > previous_h) {
         new_ul = document.createElement('ul');
         new_ul.classList.add('toc-ul');
         new_ul.appendChild(new_li);
+        console.log('b4')
     }
 }
 
