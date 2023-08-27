@@ -1,5 +1,13 @@
-#post-content {
-    overflow: hidden;
+.post-content {
+    word-break: break-all
+}
+
+.post-content.nowrap {
+    white-space: nowrap;
+}
+
+.post-content.pre-wrap {
+    white-space: pre-wrap;
 }
 
 a {
