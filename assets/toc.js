@@ -11,15 +11,42 @@ function adjust_toc() {
 }
 
 adjust_toc()
+
+
+let current_rate = 0;
+let rate_limiter = 20;
+let toc_li_array = document.getElementsByClassName('toc-li');
+
+function hightlight_toc() {
+    current_rate += 1;
+    if (current_rate != rate_limiter) {
+        return;
+    }
+
+    let found = false;
+    for (let i = h_array.length - 1; i >= 0; i --) {
+        let h = h_array[i];
+        let y = h.getBoundingClientRect().y;
+
+        if (y <= window.innerHeight / 2 && !found) {
+            console.log(h.innerHTML);
+            toc_li_array[i].classList.add('toc-active');
+            toc_li_array[i].classList.remove('toc-inactive');
+            found = true;
+        } else {
+            toc_li_array[i].classList.remove('toc-active');
+            toc_li_array[i].classList.add('toc-inactive');
+        }
+
+    }
+        
+    current_rate = 0;
+}
+
+hightlight_toc()
+
+
 window.addEventListener('resize', adjust_toc);
-
-
-
-
-
-
-
-
 
 
 const HEADINGS = ['H2', 'H3', 'H4', 'H5', 'H6'];
@@ -85,3 +112,9 @@ if (new_ul != null) {
 
 
 toc.appendChild(base_ul);
+
+
+
+
+
+document.addEventListener("scroll", hightlight_toc);
