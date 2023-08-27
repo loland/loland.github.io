@@ -47,3 +47,4 @@ if (new_ul != null) {
     base_ul.appendChild(new_ul);
 }
 
+console.log(base_ul);
