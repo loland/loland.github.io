@@ -7,6 +7,7 @@ html {
     font-size: 1.1em;
     width: 320px;
     border-left: 1px solid #ddd4d4;
+    padding-left: 5px;
 }
 
 .toc-li {
