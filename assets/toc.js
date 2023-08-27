@@ -113,5 +113,5 @@ function highlight_toc() {
     current_rate = 0;
 }
 
-highlight_toc()
+highlight_toc();
 document.addEventListener("scroll", highlight_toc);
