@@ -26,7 +26,7 @@ A brief explanation of VBScript syntax:
 + `&` concatenates strings together.
 
 <br>
-{% highlight vbscript %}
+{% highlight vb %}
 <script language="vBsCrIPt">
 
 a70=574 - &H1F8:a117=872 - &H2F3:a110=932 - &H336:a99=711 - &H264:a116=679 - &H233:a105=980 - &H36B:a111=255 - &H90:a110=582 - &H1D8:a32=390 - &H166:a66=684 - &H26A:a99=926 - &H33B:a100=642 - &H21E:a40=925 - &H375:a66=955 - &H379:a121=707 - &H24A:a86=809 - &H2D3:a97=1071 - &H3CE:a108=814 - &H2C2:a32=965 - &H3A5:a71=269 - &HC6:a68=183 - &H73:a66=258 - &HC0:a41=307 - &H10A:a13=994 - &H3D5:a10=241 - &HE7:a32=633 - &H259:a32=320 - &H120:a32=815 - &H30F:a32=265 - &HE9:a32=530 - &H1F2:a32=964 - &H3A4:a32=571 - &H21B:a32=932 - &H384:a32=614 - &H246:a32=320 - &H120:a32=605 - &H23D:a32=394 - &H16A:a32=334 - &H12E:a32=980 - &H3B4:a32=598 - &H236:a32=293 - &H105:a32=874 - &H34A:a32=452 - &H1A4:a32=764 - &H2DC:a68=669 - &H259:a105=755 - &H28A:a109=1095 - &H3DA:a32=840 - &H328:a120=335 - &HD7:a100=585 - &H1E5:a113=1018 - &H389:a13=492 - &H1DF:a10=683 - &H2A1:a32=758 - &H2D6:a32=619 - &H24B:a32=443 - &H19B:a32=620 - &H24C:a32=871 - &H347:a32=513 - &H1E1:a32=992 - &H3C0:a32=719 - &
@@ -50,7 +50,7 @@ Close
 
 We notice that a string is built on the `res` variable.
 
-{% highlight powershell %}
+{% highlight vb %}
 res =  ChrW ( a70 ) & ChrW ( a117 ) & ChrW ( a110 ) & ChrW ( a99 ) ...
 {% endhighlight %}
 
@@ -65,7 +65,7 @@ document.write(res)
 <br>
 Shown below is the value of `res` in plaintext. Long arrays and ShellExecute - looks pretty gnarly.
 
-{% highlight vbscript %}
+{% highlight vb %}
 
 Function Bcd(ByVal GDB) 
     Dim xdq 
