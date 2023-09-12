@@ -5,12 +5,13 @@ date:   2023-09-12 00:00:00 +0000
 categories: malware
 ---
 
-### 1. Campaign
 FakeSG is an ongoing malware campaign (as of 12 Sep 2023). The campaign aims to compromise websites, which imitate the victim's browser update page - prompting the user to install and execute a malicious file.
 
+
+### 1. Campaign
 The FakeSG campaign is known for its heavy obfuscation and payload delivery tactics - opting to HTML Applications `(.hta)` files to ultimately deliver the [NetSupport Manager RAT](https://malpedia.caad.fkie.fraunhofer.de/details/win.netsupportmanager_rat). [(Source)] (https://www.pcrisk.com/removal-guides/27315-fakesg-malware).
 
-In this blog entry, we will analyze a `.hta` instance from the campaign
+In this blog entry, we will analyze a `.hta` instance from the campaign, pulled off [MalwareBazaar](https://bazaar.abuse.ch/sample/4a9f42167f399abfbb42a5ee4d52922eb3f7f1ce88d23824f01d13e50609b8b9/)
 
 
 <br>
@@ -24,6 +25,7 @@ A brief explanation of VBScript syntax:
 + `ChrW()` converts decimal numbers into unicode characters.
 + `&` concatenates strings together.
 
+<br>
 {% highlight vbscript %}
 <script language="vBsCrIPt">
 
@@ -44,4 +46,4 @@ Close
 
 
 <br>
-### 2. Obfuscation
+### 2. Deobfuscation
