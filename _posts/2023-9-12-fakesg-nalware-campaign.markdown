@@ -47,6 +47,14 @@ Close
 
 <br>
 ### 3. Deobfuscation
+Being pretty unfamiliar with the VBScript language, I sourced for some material on how to get started with this sample. 
+
+Surprisingly, I found an step-by-step analysis [report](https://isc.sans.edu/diary/Another+Malicious+HTA+File+Analysis+Part+1/29674) for a similar malware sample - likely from the same malware family/threat actor. The author wrote a Python script, making use of regex to extract and deobfuscate the strings.
+
+However, I was quite sure there was an easier way - and there was.
+
+
+<br>
 #### 3.1. Initial Deobfuscation
 We notice that a string is built on the `res` variable.
 
@@ -55,7 +63,7 @@ res =  ChrW ( a70 ) & ChrW ( a117 ) & ChrW ( a110 ) & ChrW ( a99 ) ...
 {% endhighlight %}
 
 <br>
-To dynamically extract its contents, we add the line `document.write(res)` and run the malicious code. Then, we simply copy the value from the HTA window.
+To dynamically extract its contents, we add the line `document.write(res)` and run the malicious code. Then, we simply copy the value written into the HTA window.
 
 {% highlight powershell %}
 res =  ChrW ( a70 ) & ChrW ( a117 ) & ChrW ( a110 ) & ChrW ( a99 ) ...
@@ -110,7 +118,7 @@ qSN()
 
 <br>
 #### 3.2. String Decoding
-Decoding the 3 Arrays lead to the following strings
+Performing the same deobfuscation technique as above, by printing the variable value with `document.write()`. I decoded the 3 Arrays observed in the document. Below is the result.
 
 {% highlight powershell %}
 LJD = "powershell.exe"
