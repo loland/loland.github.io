@@ -123,7 +123,11 @@ Remote Thread: 0
 The above example fails, because `CreateRemoteThread` cannot be called from a 32-bit process, to start a thread in a 64-bit process. As stated earlier, this is one of the limitations of 32-bit malware.
 
 Now, let's launch a 32-bit powershell.exe process, and run our malware. 
+
 ![powershell32](/assets/post_assets/process-injection-techniques/powershell32.png)
+
+<br>
+Notice a successful handle to the remote thread.
 
 {% highlight powershell%}
 C:\Users\root\Desktop
@@ -136,6 +140,6 @@ Remote Thread: 0x12c
 {% endhighlight %}
 
 <br>
-Success!
+Popped a shell. Success!
 
 ![shell1](/assets/post_assets/process-injection-techniques/shell1.png)
