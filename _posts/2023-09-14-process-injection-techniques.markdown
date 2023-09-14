@@ -143,3 +143,46 @@ Remote Thread: 0x12c
 Popped a shell. Success!
 
 ![shell1](/assets/post_assets/process-injection-techniques/shell1.png)
+
+
+<br>
+#### 2.3. Identifying 32-bit processes?
+As we learnt above, 32-bit processes must find other 32-bit processes to inject into. 
+
+The below code enumerates all processes in the system with `CreateToolhelp32Snapshot`, then identifies those that are 32-bit.
+
+{% highlight cpp %}
+#include <windows.h>
+#include <tlhelp32.h>
+#include <iostream>
+
+int main(int argc, char** argv) {
+    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    std::string filepath = argv[0];
+    int index = filepath.find_last_of("\\/");
+    std::string filename = filepath.substr(index + 1);
+
+    PROCESSENTRY32 processEntry;
+    processEntry.dwSize = sizeof(PROCESSENTRY32);
+
+    while (Process32Next(snapshot, &processEntry)) {
+        HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, processEntry.th32ProcessID);
+        
+        BOOL isWow64 = FALSE;
+        IsWow64Process(hProcess, &isWow64);
+        if (isWow64 && (strcmp(processEntry.szExeFile, filename.c_str()) != 0)) {
+            std::cout << "Found 32-bit process: " << processEntry.szExeFile << std::endl;
+            // malicious activity 
+            break;
+        }
+    };
+}
+{% endhighlight %}
+
+<br>
+Here's the output. The script successfully identified the Powershell (x86) instance running.
+
+{% highlight powershell %}
+PS C:\Users\root\Desktop\check32bit> .\check32bit.exe
+Found 32-bit process: powershell.exe
+{% endhighlight %}
