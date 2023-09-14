@@ -146,7 +146,7 @@ Popped a shell. Success!
 
 
 <br>
-#### 2.3. Identifying 32-bit processes?
+#### 2.3. Identifying 32-bit processes
 As we learnt above, 32-bit processes must find other 32-bit processes to inject into. 
 
 The below code enumerates all processes in the system with `CreateToolhelp32Snapshot`, then identifies those that are 32-bit.
