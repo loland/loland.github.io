@@ -127,7 +127,7 @@ Now, let's launch a 32-bit powershell.exe process, and run our malware.
 ![powershell32](/assets/post_assets/process-injection-techniques/powershell32.png)
 
 <br>
-Notice a successful handle to the remote thread.
+Successfully obtained a handle on the remote thread.
 
 {% highlight powershell%}
 C:\Users\root\Desktop
