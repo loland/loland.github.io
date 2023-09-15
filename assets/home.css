@@ -22,4 +22,6 @@ hr {
 
 .post-list > li {
     position: relative;
+    border-left: 1px solid #ddd4d4;
+    padding-left: 20px;
 }
