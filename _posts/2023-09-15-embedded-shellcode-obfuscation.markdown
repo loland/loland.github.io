@@ -83,7 +83,7 @@ int main() {
 
 <br>
 Here are the results. Extremely strange that only 26/70 vendors flagged this sample, considering it has no protection mechanisms at all. 
-SHA256: ![1d2c5660e52b21d7a690d1d76af0f734e3b1bb59d6beff3f94c51c1296b6d92b](https://www.virustotal.com/gui/file/1d2c5660e52b21d7a690d1d76af0f734e3b1bb59d6beff3f94c51c1296b6d92b)
+SHA256: [1d2c5660e52b21d7a690d1d76af0f734e3b1bb59d6beff3f94c51c1296b6d92b](https://www.virustotal.com/gui/file/1d2c5660e52b21d7a690d1d76af0f734e3b1bb59d6beff3f94c51c1296b6d92b)
 
 ![vt_baseline](/assets/post_assets/embedded-shellcode-obfuscation/vt_baseline.png)
 
@@ -140,9 +140,9 @@ int main() {
 
 <br>
 Huge improvement in bypassing static antivirus scans.
-SHA256: ![0e247e2d325514022ca189b4f1d67ae6d8cec890f561a97e8857c6967df5902b](https://www.virustotal.com/gui/file/0e247e2d325514022ca189b4f1d67ae6d8cec890f561a97e8857c6967df5902b)
+SHA256: [0e247e2d325514022ca189b4f1d67ae6d8cec890f561a97e8857c6967df5902b](https://www.virustotal.com/gui/file/0e247e2d325514022ca189b4f1d67ae6d8cec890f561a97e8857c6967df5902b)
 
-![vt_index_xor](/assets/post_assets/embedded-shellcode-obfuscation/)
+![vt_fixed_xor](/assets/post_assets/embedded-shellcode-obfuscation/vt_fixed_xor.png)
 
 
 <br>
@@ -191,11 +191,17 @@ int main() {
 
 <br>
 The results - 6/71 vendors detected. Same as the Fixed-XOR technique
-SHA256: ![7d7710c28190bc5d49187fd99bf042574705b57454ad770e7239b602596ddfbf](https://www.virustotal.com/gui/file/7d7710c28190bc5d49187fd99bf042574705b57454ad770e7239b602596ddfbf)
+SHA256: [7d7710c28190bc5d49187fd99bf042574705b57454ad770e7239b602596ddfbf](https://www.virustotal.com/gui/file/7d7710c28190bc5d49187fd99bf042574705b57454ad770e7239b602596ddfbf)
 
-![vt_index_xor](/assets/post_assets/embedded-shellcode-obfuscation//vt_index_xor.png)
+![vt_index_xor](/assets/post_assets/embedded-shellcode-obfuscation/vt_index_xor.png)
 
 
 <br>
 #### 3.3. XOR Summary
 Both the Fixed-XOR and Index-XOR scored the same 6/71 score on VirusTotal. This meant that even Fixed-XOR hid the shellcode successfully, and it doesn't matter the depth of the shellcode obfuscation. This suggests that the remaining 6 vendors detected other traits of the malicious file - likely the plaintext WinAPIs - and other patterns yet unknown (to me).
+
+For the remaining incrementals, I will continue off the Index-XOR version.
+
+<br>
+### 4. Dynamic Loading
+This section will test the 
