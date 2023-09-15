@@ -1,11 +1,11 @@
 ---
 layout: post
 title:  "Embedded Shellcode Obfuscation"
-date:   2023-09-12 00:00:00 +0000
+date:   2023-09-15 00:00:00 +0000
 categories: malware
 ---
 
-In this blog entry, I'll be playing around with obfuscation techniques to bypass antivirus detection for an embedded meterpreter shellcode. The goal is to run shellcode in the local process, and to minimize VirusTotal flags.
+In this blog entry, I'll be playing around with obfuscation techniques to bypass antivirus detection for an embedded meterpreter shellcode. The goal is to run shellcode in the local process, and to minimize VirusTotal flags. Techniques will be incrementally applied to the binary to observe progressive success.
 
 ### 1. Generating Shellcode
 To kickstart the research, I'll generate a basic meterpreter payload. This same payload will be used throughout the research.
@@ -68,4 +68,4 @@ Here are the results. Extremely strange that only 26/70 vendors flagged this sam
 
 
 <br>
-### 3. 1st: Static Shellcode Obfuscation 
+### 3. Static Shellcode Obfuscation 
