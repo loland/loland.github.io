@@ -368,7 +368,7 @@ The research states that the most effective traits of identifying decoding routi
 + Many cross-references to a function
 
 <br>
-And how could I miss it. If one did analyze the floss output, they'd notice
+And how could I miss it. If one did analyze the floss log output, they'd notice such procedures.
 
 {%%}
 extracting stackstrings: 100%|████████████████████████████████████████████████████| 58/58 [00:00<00:00, 149.19 functions/s] INFO: floss.tightstrings: extracting tightstrings from 4 functions...
@@ -390,4 +390,4 @@ INFO: floss.results: VSWh
 emulating function 0x402a34 (call 1/1): 100%|██████████████████████████████████████| 22/22 [00:31<00:00,  1.44s/ functions] INFO: floss: finished execution after 39.37 seconds
 {%%}
 
-Based on these 2 traits. Let's attempt a bypass.
+Based on the above 2 stated traits. Let's attempt a bypass.
