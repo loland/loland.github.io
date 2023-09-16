@@ -273,8 +273,12 @@ int main() {
 }
 {% endhighlight %}
 
+<br>
+Here are the results. As expected, dynamic loading improved its detection bypass. The antiviruses it bypassed probably only looked at the binary's IAT, and didn't consider the WinAPI strings.
+
 SHA256: [f1a5e2dbb64219c6d0373234b489f457ef37571e7bc05a28b0c4bac16ad7e1a6](https://www.virustotal.com/gui/file/f1a5e2dbb64219c6d0373234b489f457ef37571e7bc05a28b0c4bac16ad7e1a6)
 
+![vt_dynamic_plaintext](/assets/post_assets/embedded-shellcode-obfuscation/vt_dynamic_plaintext.png)
 
 <br>
 #### 4.2. Obfuscated WinAPIs
@@ -324,4 +328,66 @@ deobfuscate_string(create_thread_str, sizeof(create_thread_str));
 deobfuscate_string(wait_for_single_obj_str, sizeof(wait_for_single_obj_str));
 {% endhighlight %}
 
+Surprisingly, detection bypass didn't improve much.
+
 SHA256: [ef75273f8200c6395fb19c1476da1211804e9cc3873d74d98408f7f76dee4c0d](https://www.virustotal.com/gui/file/ef75273f8200c6395fb19c1476da1211804e9cc3873d74d98408f7f76dee4c0d)
+
+![vt_dynamic_obfuscated](/assets/post_assets/embedded-shellcode-obfuscation/vt_dynamic_obfuscated.png)
+
+<br>
+#### 4.3. FLOSS, How??
+Out of interest, I ran the command `floss main5.exe` against the binary. And floss STILL managed to pull out the WinAPI strings I was trying to hide. This demands an investigation.
+
+{% highlight cpp %}
+------------------------------
+| FLOSS DECODED STRINGS (14) |
+------------------------------
+CreateThread
+kernel32.dll
+WaitForSingleObject
+VirtualAlloc
+WaitForSingleObject
+CreateThread
+VirtualAlloc
+kernel32.dll
+D$$[[aYZQ
+hws2_ThLw&
+VSWh
+D$$[[aYZQ
+hws2_ThLw&
+VSWh
+{% endhighlight %}
+
+<br>
+Reading the [FLOSS](https://www.mandiant.com/resources/blog/automatically-extracting-obfuscated-strings) research paper - it was when I realized... Floss EMULATES code. WTF? 
+
+It identifies decoding routines within the binary, and emulates calls to said routine. This is absolutely genius. 
+
+The research states that the most effective traits of identifying decoding routines are.
++ Non-zeroing XOR operations
++ Many cross-references to a function
+
+<br>
+And how could I miss it. If one did analyze the floss output, they'd notice
+
+{%%}
+extracting stackstrings: 100%|████████████████████████████████████████████████████| 58/58 [00:00<00:00, 149.19 functions/s] INFO: floss.tightstrings: extracting tightstrings from 4 functions...
+extracting tightstrings from function 0x402a34: 100%|████████████████████████████████| 4/4 [00:00<00:00, 19.61 functions/s] INFO: floss.string_decoder: decoding strings
+INFO: floss.results: CreateThread
+INFO: floss.results: kernel32.dll
+INFO: floss.results: WaitForSingleObject
+INFO: floss.results: VirtualAlloc
+INFO: floss.results: WaitForSingleObject
+INFO: floss.results: CreateThread
+INFO: floss.results: VirtualAlloc
+INFO: floss.results: kernel32.dll
+INFO: floss.results: D$$[[aYZQ
+INFO: floss.results: hws2_ThLw&
+INFO: floss.results: VSWh
+INFO: floss.results: D$$[[aYZQ
+INFO: floss.results: hws2_ThLw&
+INFO: floss.results: VSWh
+emulating function 0x402a34 (call 1/1): 100%|██████████████████████████████████████| 22/22 [00:31<00:00,  1.44s/ functions] INFO: floss: finished execution after 39.37 seconds
+{%%}
+
+Based on these 2 traits. Let's attempt a bypass.
