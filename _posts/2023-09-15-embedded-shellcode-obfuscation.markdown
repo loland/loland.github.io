@@ -427,7 +427,7 @@ deobfuscate_ptr(kernel32_str, sizeof(kernel32_str));
 
 <br>
 #### 5.2. No Functions (Fail)
-Attempted to avoid using functions completely. This still didn't work.
+Attempted to avoid using functions completely. This still didn't work. Reading further into the [FLOSS Blog](https://www.mandiant.com/resources/blog/floss-version-2), I made the assumption that this decoding procedure fell under that category of "tight strings", where strings are decoded in a "tight" loop.
 
 {% highlight cpp %}
 char kernel32_str[] {"\x4c\x42\x55\x49\x42\x4b\x14\x15\x09\x43\x4b\x4b"};
