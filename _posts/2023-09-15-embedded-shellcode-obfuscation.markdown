@@ -370,7 +370,7 @@ The research states that the most effective traits of identifying decoding routi
 <br>
 And how could I miss it. If one did analyze the floss log output, they'd notice such procedures.
 
-{%%}
+{% highlight powershell %}
 extracting stackstrings: 100%|████████████████████████████████████████████████████| 58/58 [00:00<00:00, 149.19 functions/s] INFO: floss.tightstrings: extracting tightstrings from 4 functions...
 extracting tightstrings from function 0x402a34: 100%|████████████████████████████████| 4/4 [00:00<00:00, 19.61 functions/s] INFO: floss.string_decoder: decoding strings
 INFO: floss.results: CreateThread
@@ -388,6 +388,6 @@ INFO: floss.results: D$$[[aYZQ
 INFO: floss.results: hws2_ThLw&
 INFO: floss.results: VSWh
 emulating function 0x402a34 (call 1/1): 100%|██████████████████████████████████████| 22/22 [00:31<00:00,  1.44s/ functions] INFO: floss: finished execution after 39.37 seconds
-{%%}
+{% endhighlight %}
 
 Based on the above 2 stated traits. Let's attempt a bypass.
