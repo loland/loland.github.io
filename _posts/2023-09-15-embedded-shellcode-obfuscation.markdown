@@ -335,8 +335,8 @@ SHA256: [ef75273f8200c6395fb19c1476da1211804e9cc3873d74d98408f7f76dee4c0d](https
 ![vt_dynamic_obfuscated](/assets/post_assets/embedded-shellcode-obfuscation/vt_dynamic_obfuscated.png)
 
 <br>
-#### 4.3. FLOSS, How??
-Out of interest, I ran the command `floss main5.exe` against the binary. And floss STILL managed to pull out the WinAPI strings I was trying to hide. This demands an investigation.
+#### 4.3. FLOSS, HOW??
+Out of interest, I ran the command `floss main5.exe` against the binary. And floss STILL managed to pull out the WinAPI strings I was trying to hide?? This demands an investigation.
 
 {% highlight cpp %}
 ------------------------------
@@ -391,3 +391,61 @@ emulating function 0x402a34 (call 1/1): 100%|███████████�
 {% endhighlight %}
 
 Based on the above 2 stated traits. Let's attempt a bypass.
+
+<br>
+### 5. Bypassing FLOSS
+Despite obfuscating our WinAPI strings, the incredible FLOSS still manages to extract them. In this section, we will experiment bypassing techniques, keeping them as simple as possible.
+
+<br>
+#### 5.1. Dynamic Calls (Fail)
+Here, I use dynamic calls in an attempt to reduce cross-references to a function. I'll describe it in pseudocode assembly below. Because there aren't cross-references to `call eax`, it might hinder emulation.
+
+{% highlight nasm %}
+load_deobfuscate:
+    mov eax, deobfuscate_string
+    jmp do_call
+
+load_nothing:
+    mov eax, does_nothing
+
+do_call:
+    call eax
+{% endhighlight %}
+
+<br>
+And here is the cpp code that makes this possible.
+
+{% highlight cpp %}
+void (*deobfuscate_ptr)(char*, int);
+if (kernel32_str) {
+    deobfuscate_ptr = deobfuscate_string;
+} else {
+    deobfuscate_ptr = does_nothing;
+}
+deobfuscate_ptr(kernel32_str, sizeof(kernel32_str));
+{% endhighlight %}
+
+<br>
+#### 5.2. No Functions (Fail)
+Attempted to avoid using functions completely. This still didn't work.
+
+{% highlight cpp %}
+char kernel32_str[] {"\x4c\x42\x55\x49\x42\x4b\x14\x15\x09\x43\x4b\x4b"};
+char virtual_alloc_str[] {"\x71\x4e\x55\x53\x52\x46\x4b\x66\x4b\x4b\x48\x44"};
+char create_thread_str[] {"\x64\x55\x42\x46\x53\x42\x73\x4f\x55\x42\x46\x43"};
+char wait_for_single_obj_str[] {"\x70\x46\x4e\x53\x61\x48\x55\x74\x4e\x49\x40\x4b\x42\x68\x45\x4d\x42\x44\x53"};
+
+char* strings[4];
+strings[0] = kernel32_str;
+strings[1] = virtual_alloc_str;
+strings[2] = create_thread_str;
+strings[3] = wait_for_single_obj_str;
+
+for (int i {0}; i < 4; i++) {
+    int j {0};
+    while(strings[i][j] != 0x00) {
+        strings[i][j] = strings[i][j] ^ 0x27;
+        j += 1;
+    }
+}
+{% endhighlight %}
