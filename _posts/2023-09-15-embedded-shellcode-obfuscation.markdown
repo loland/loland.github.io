@@ -400,6 +400,8 @@ Despite obfuscating our WinAPI strings, the incredible FLOSS still manages to ex
 #### 5.1. Dynamic Calls (Fail)
 Here, I use dynamic calls in an attempt to reduce cross-references to a function. I'll describe it in pseudocode assembly below. Because there aren't cross-references to `call eax`, it might hinder emulation.
 
+However, as per the section title, this attempt was not a successful bypass.
+
 {% highlight nasm %}
 load_deobfuscate:
     mov eax, deobfuscate_string
@@ -448,4 +450,31 @@ for (int i {0}; i < 4; i++) {
         j += 1;
     }
 }
+{% endhighlight %}
+
+<br>
+#### 5.3. Stack String
+Building strings on the stack didn't work either. Avoided the use of functions and loops - even tried to be sneaky by deleting `kernel32_str` immediately after use, but FLOSS still extracted the complete "kernel32.dll" string. 
+
+{% highlight cpp %}
+char L[] {"abcdefghijklmnopqrstuvwxyz"};
+char U[] {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"};
+char N[] {"0123456789."};
+
+char kernel32_str[13];
+kernel32_str[0] = L[10];
+kernel32_str[1] = L[4];
+kernel32_str[2] = L[17];
+kernel32_str[3] = L[13];
+kernel32_str[4] = L[4];
+kernel32_str[5] = L[11];
+kernel32_str[6] = N[3];
+kernel32_str[7] = N[2];
+kernel32_str[8] = N[10];
+kernel32_str[9] = L[3];
+kernel32_str[10] = L[11];
+kernel32_str[11] = L[11];
+kernel32_str[12] = 0;
+std::cout << kernel32_str << std::endl;
+memset(kernel32_str, 0, sizeof(kernel32_str));
 {% endhighlight %}
