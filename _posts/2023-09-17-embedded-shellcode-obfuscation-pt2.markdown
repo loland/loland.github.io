@@ -15,7 +15,16 @@ We left off on version `main6.cpp`, now compiled to `main6_stripped.exe`. As of 
 + XOR decoding of meterpreter shellcode.
 + Execution of meterpreter shellcode in local process.
 
-4/71 vendors flags the current version on VirusTotal. Interesting to note that stripping the binary (-s) had led to different detection and classification results.
+<br>
+As of 17 Sep 2023, 4/71 vendors flag the current version on VirusTotal. Interesting to note that stripping the binary (-s) had led to different detection and classification results.
 
 SHA256: [899db787a234bcaf90ae381fd034c6b119a5f5f96b54c5a507a548397ea404b9](https://www.virustotal.com/gui/file/899db787a234bcaf90ae381fd034c6b119a5f5f96b54c5a507a548397ea404b9)
 
+![vt_stripped](/assets/post_assets/embedded-shellcode-obfuscation/vt_stripped.png)
+
+<br>
+It was getting tough trying to find ways to bypass detection. I'm unsure of what characteristics or signatures were flagged. To throw a wild guess, perhaps traits like filesize, entropy, length of encrypted bytes were used. I didn't want to simply pack the binary - that would be too simple.
+
+To note of current progress, Windows Defender does not detect `main6_stripped.exe` while on the filesystem. But is flagged when executed.
+
+![windef](/assets/post_assets/embedded-shellcode-obfuscation/windef.png)
