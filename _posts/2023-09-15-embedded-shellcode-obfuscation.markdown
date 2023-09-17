@@ -577,3 +577,8 @@ Unfortunately this time, more vendors detected the file as malicious. But becaus
 SHA256: [2d98d3dae97d76fe9370bff18e7de6c4fd0c0761737ae74809e3e232c1c02080](https://www.virustotal.com/gui/file/2d98d3dae97d76fe9370bff18e7de6c4fd0c0761737ae74809e3e232c1c02080)
 
 ![vt_floss](/assets/post_assets/embedded-shellcode-obfuscation/vt_floss.png)
+
+
+<br>
+### 6. Continuation
+Continuation of this research in "Embedded Shellcode Obfuscation Part 2".
