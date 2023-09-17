@@ -23,7 +23,7 @@ SHA256: [899db787a234bcaf90ae381fd034c6b119a5f5f96b54c5a507a548397ea404b9](https
 ![vt_stripped](/assets/post_assets/embedded-shellcode-obfuscation/vt_stripped.png)
 
 <br>
-It was getting tough trying to find ways to bypass detection. I'm unsure of what characteristics or signatures were flagged. To throw a wild guess, perhaps traits like filesize, entropy, length of encrypted bytes were used. I didn't want to simply pack the binary - that would be too simple.
+It was getting tough trying to find ways to bypass detection. I'm unsure of what characteristics or signatures were flagged. To throw a wild guess, perhaps traits like filesize, entropy, length of encrypted bytes were used. Also, I didn't want to pack the binary - that would be too simple.
 
 To note of current progress, Windows Defender does not detect `main6_stripped.exe` while on the filesystem. But is flagged when executed.
 
