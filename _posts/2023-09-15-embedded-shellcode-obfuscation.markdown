@@ -5,7 +5,9 @@ date:   2023-09-15 00:00:00 +0000
 categories: malware
 ---
 
-In this blog entry, I'll be playing around with obfuscation techniques to bypass antivirus detection for an embedded meterpreter shellcode. The goal is to run shellcode in the local process, and to minimize VirusTotal flags. Techniques will be incrementally applied to the binary to observe progressive success.
+In this blog entry, I'll be playing around with obfuscation techniques to bypass antivirus detection for an embedded meterpreter shellcode. The goal is to run shellcode in the local process, and to minimize VirusTotal flags. Techniques will be incrementally applied to the binary to observe progressive success. 
+
+Note that results of this research project are time-sensitive. Vendor flags on fresh malware samples will increase drastically over time, likely due to backend sandboxes updating AV signatures. Results published in this blog will differ based on time of reading.
 
 ### 1. Generating Shellcode
 To kickstart the research, I'll generate a basic meterpreter payload. This same payload will be used throughout the research.

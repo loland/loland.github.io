@@ -94,7 +94,6 @@ void decode_payload() {
     }
 }
 
-
 HMODULE load_module(char* string, int size) {
     for (int i {0}; i < size - 1; i ++) {
         string[i] = string[i] ^ 0x27;
