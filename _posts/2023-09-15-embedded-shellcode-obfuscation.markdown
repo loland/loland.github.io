@@ -328,6 +328,7 @@ deobfuscate_string(create_thread_str, sizeof(create_thread_str));
 deobfuscate_string(wait_for_single_obj_str, sizeof(wait_for_single_obj_str));
 {% endhighlight %}
 
+<br>
 Surprisingly, detection bypass didn't improve much.
 
 SHA256: [ef75273f8200c6395fb19c1476da1211804e9cc3873d74d98408f7f76dee4c0d](https://www.virustotal.com/gui/file/ef75273f8200c6395fb19c1476da1211804e9cc3873d74d98408f7f76dee4c0d)
