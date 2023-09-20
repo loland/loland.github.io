@@ -51,3 +51,10 @@ The shellcode obtains the `InMemoryOrderModuleList` structure, which it iterates
 In the first `load-execute` call, the shellcode finds the address of `LoadLibraryA` and calls `LoadLibraryA("ws2_32")`, the Winsock dll, to enable networking capabilities. 
 
 ![loadlibrary_x32](/assets/post_assets/inner-workings-of-meterpreter/loadlibrary_x32.png)
+
+
+<br>
+### 3. Second Stage Payload
+Memory space for the second stage payload is allocated with `VirtualAlloc`. The memory space is then populated with the payload received in the second `ws32.recv` call.
+
+![ida_virtualalloc](/assets/post_assets/inner-workings-of-meterpreter/ida_virtualalloc.png)
