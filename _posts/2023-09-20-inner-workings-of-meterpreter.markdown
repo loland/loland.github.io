@@ -22,7 +22,7 @@ Parameteres are pushed onto the stack from `main` and are passed into `load-exec
 
 <br>
 ### 2. The "load-execute" Function
-In ideal shellcode conditions, `load-execute` will be called 7 times that resolves and executes the following WinAPIs in order.
+In ideal shellcode conditions, `load-execute` will be called 7 times to resolve and execute the following WinAPIs in order.
 
 + kernel32.LoadLibraryA
 + ws_32.WSAStartup
