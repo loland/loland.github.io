@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "The Inner Workings of Meterpreter"
+title:  "The Inner Workings of Meterpreter (shellcode)"
 date:   2023-09-17 00:00:00 +0000
 categories: malware
 ---

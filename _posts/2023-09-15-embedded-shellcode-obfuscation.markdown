@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Embedded Shellcode Obfuscation"
+title:  "Embedded Shellcode Obfuscation (C++)"
 date:   2023-09-15 00:00:00 +0000
 categories: malware
 ---

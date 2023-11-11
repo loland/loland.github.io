@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Process Injection Techniques"
+title:  "Process Injection Techniques (C++)"
 date:   2023-09-12 00:00:00 +0000
 categories: malware
 ---
