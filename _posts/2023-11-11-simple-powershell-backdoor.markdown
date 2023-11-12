@@ -66,11 +66,12 @@ To extract the contents of $payload_bytes to a file, the following line was used
 {% endhighlight %}
 
 <br>
-Notable was the shellcode's length at 510 bytes - irregularly long, at least in my experience. It doesn't stand out as any of Metasploit's shells. 
+Notable was the shellcode's length at 510 bytes - irregularly long, at least in my experience. It doesn't stand out as any of Metasploit's shells (plot twist: it does). Running the malicious .ps1 does not generate any DNS requests, possibly due to use of a hardcoded IP.
 
 To facilitate debugging, I added code to the malware to help locate the shellcode in memory, and delay its execution until requested. 
 
 `echo $valloc_addr` prints out the address of the allocated memory.
+
 `Read-Host` delays execution of shellcode until an input is made through the command line.
 
 {% highlight powershell %}
@@ -88,6 +89,18 @@ Printed in the console is the memory address casted to an integer. Conversion of
 ![address_ps](/assets/post_assets/simple-powershell-backdoor/address_ps.png)
 
 <br>
-Tied with x32dbg to reveal the shellcode in memory. A breakpoint can then be set.
+Attached with x32dbg to reveal the shellcode in memory. A breakpoint can then be set.
 
 ![x32_sc](/assets/post_assets/simple-powershell-backdoor/x32_sc.png)
+
+<br>
+#### 2.1. Metasploit Signatures
+The code's control flow immediately stands out as a meterpreter shell.
+
+![msf_sig1](/assets/post_assets/simple-powershell-backdoor/msf_sig1.png)
+
+<br>
+#### 2.2. Exception
+Unfortunately, I couldn't get the shellcode to run successfully. An EXCEPTION_ACCESS_VIOLATION occurs at offset 0xf6.
+
+![sc_exception](/assets/post_assets/simple-powershell-backdoor/sc_exception.png)
