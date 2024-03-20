@@ -19,14 +19,14 @@ Pretty standard sections and permissions. Nothing unusual here.
 ![sections](/assets/post_assets/temp/sections.png)
 
 <br>
-The sample does, however, statically import many suspicious libraries, of which their uses I can only make preliminary assumptions.
+The sample does, however, statically import many suspicious libraries, its uses of which I can only make preliminary assumptions.
 
-*Anti-Debugging*
-+ EnumDisplayMonitors
-+ GetMonitorInfo
-+ EnumResourceLanguages
-+ EnumDisplayDevices
-+ HeapQueryInformation
+##### Anti-Debugging
+:  + EnumDisplayMonitors
+:  + GetMonitorInfo
+:  + EnumResourceLanguages
+:  + EnumDisplayDevices
+:  + HeapQueryInformation
 
 <br>
 Running `floss malware.exe` produced lots of garbage strings, indicating that the binary could be packed. Besides that, nothing of interest in the floss output.
