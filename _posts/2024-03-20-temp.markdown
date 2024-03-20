@@ -21,7 +21,7 @@ Pretty standard sections and permissions. Nothing unusual here.
 <br>
 The sample does, however, statically import many suspicious libraries, its uses of which I can only make preliminary assumptions.
 
-Anti-Debugging
+1. Anti-Debugging
     * EnumDisplayMonitors
     * GetMonitorInfo
     * EnumResourceLanguages
