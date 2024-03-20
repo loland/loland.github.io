@@ -22,21 +22,21 @@ Pretty standard sections and permissions. Nothing unusual here.
 The sample does, however, import many suspicious libraries - some of their uses I can only make preliminary assumptions.
 
 <b>Anti-Debugging</b>
-    + EnumDisplayMonitors
-    + GetMonitorInfo
-    + EnumResourceLanguages
-    + EnumDisplayDevices
-    + HeapQueryInformation
++ EnumDisplayMonitors
++ GetMonitorInfo
++ EnumResourceLanguages
++ EnumDisplayDevices
++ HeapQueryInformation
 
 <b>Shellcode/Unpacking</b>
-    + VirtualProtect
-    + VirtualAlloc
++ VirtualProtect
++ VirtualAlloc
 
 <b>Networking</b>
-    + WSASocket
-    + WSAloctl
-    + WSASend
-    + WSARecv
++ WSASocket
++ WSAloctl
++ WSASend
++ WSARecv
 
 <br>
 Running `floss malware.exe` produced lots of garbage strings, indicating that the binary could be packed. Besides that, nothing of interest in the floss output.
