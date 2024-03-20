@@ -9,7 +9,7 @@ Malware sample of unknown category from [MalwareBazaar](https://bazaar.abuse.ch/
 
 <br>
 ### 1. Preliminary Analysis
-The malware comes wrapped with a strange icon: A reverse image search finds its origin from the Super Mario Bros assets.
+The malware comes wrapped with a strange icon: A reverse image search finds its origin from Super Mario Bros assets.
 
 ![icon](/assets/post_assets/temp/icon.png)
 
@@ -17,6 +17,16 @@ The malware comes wrapped with a strange icon: A reverse image search finds its 
 Pretty standard sections and permissions. Nothing unusual here.
 
 ![sections](/assets/post_assets/temp/sections.png)
+
+<br>
+The sample does, however, statically import many suspicious libraries, of which their uses I can only make preliminary assumptions.
+
+*Anti-Debugging*
++ EnumDisplayMonitors
++ GetMonitorInfo
++ EnumResourceLanguages
++ EnumDisplayDevices
++ HeapQueryInformation
 
 <br>
 Running `floss malware.exe` produced lots of garbage strings, indicating that the binary could be packed. Besides that, nothing of interest in the floss output.
@@ -38,3 +48,4 @@ h8$I
 Q`Rj
 ...
 {% endhighlight %}
+
