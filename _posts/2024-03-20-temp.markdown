@@ -9,7 +9,7 @@ Malware sample of unknown category from [MalwareBazaar](https://bazaar.abuse.ch/
 
 <br>
 ### 1. Preliminary Analysis
-The malware comes wrapped with a strange icon: A reverse image search finds its origin from Super Mario Bros assets.
+The malware came wrapped in a strange icon: A reverse image search finds its origin from a Super Mario Bros asset.
 
 ![icon](/assets/post_assets/temp/icon.png)
 
@@ -21,9 +21,9 @@ Pretty standard sections and permissions. Nothing unusual here.
 <br>
 The sample does, however, import many suspicious libraries - some of their uses I can only make preliminary assumptions.
 
-1. Anti-Debugging - `EnumDisplayMonitors`, `GetMonitorInfo`, `EnumResourceLanguages`, `EnumDisplayDevices`, `HeapQueryInformation`, `GetAdaptersInfo`
-2. Shellcode/Unpacking - `VirtualProtect`, `VirtualAlloc`
-3. Networking - `WSASocket`, `WSAloctl`, `WSASend`, `WSARecv`
+1. <b>Anti-Debugging</b> - `EnumDisplayMonitors`, `GetMonitorInfo`, `EnumResourceLanguages`, `EnumDisplayDevices`, `HeapQueryInformation`, `GetAdaptersInfo`
+2. <b>Shellcode/Unpacking</b> - `VirtualProtect`, `VirtualAlloc`
+3. <b>Networking</b> - `WSASocket`, `WSAloctl`, `WSASend`, `WSARecv`
 
 <br>
 Running `floss malware.exe` returned a whole bunch of garbage strings, indicating that the binary could be packed. Besides that, there were nothing else of interest in the floss output.
