@@ -21,35 +21,12 @@ Pretty standard sections and permissions. Nothing unusual here.
 <br>
 The sample does, however, import many suspicious libraries - some of their uses I can only make preliminary assumptions.
 
-| Anti-Debugging | Shellcode/Unpacking | Networking |
-|-------|--------|---------|
-| EnumDisplayMonitors | VirtualProtect | WSASocket |
-| GetMonitorInfo | VirtualAlloc | WSAloctl |
-| EnumResourceLanguages | | WSASend |
-| EnumDisplayDevices | | WSARecv
-| HeapQueryInformation | | 
-
-<b></b>
-+ 
-+ 
-+ 
-+ 
-+ 
+1. Anti-Debugging (EnumDisplayMonitors, GetMonitorInfo, EnumResourceLanguages, EnumDisplayDevices, HeapQueryInformation)
+2. Shellcode/Unpacking (VirtualProtect, VirtualAlloc)
+3. Networking (WSASocket, WSAloctl, WSASend, WSARecv)
 
 <br>
-<b></b>
-+ 
-+ 
-
-<br>
-<b></b>
-+ 
-+ 
-+ 
-+ 
-
-<br>
-Running `floss malware.exe` produced lots of garbage strings, indicating that the binary could be packed. Besides that, nothing of interest in the floss output.
+Running `floss malware.exe` returned a whole bunch of garbage strings, indicating that the binary could be packed. Besides that, there were nothing else of interest in the floss output.
 
 {% highlight powershell %}
 ...
