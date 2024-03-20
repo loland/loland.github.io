@@ -21,9 +21,9 @@ Pretty standard sections and permissions. Nothing unusual here.
 <br>
 The sample does, however, import many suspicious libraries - some of their uses I can only make preliminary assumptions.
 
-1. Anti-Debugging (EnumDisplayMonitors, GetMonitorInfo, EnumResourceLanguages, EnumDisplayDevices, HeapQueryInformation)
-2. Shellcode/Unpacking (VirtualProtect, VirtualAlloc)
-3. Networking (WSASocket, WSAloctl, WSASend, WSARecv)
+1. Anti-Debugging - `EnumDisplayMonitors`, `GetMonitorInfo`, `EnumResourceLanguages`, `EnumDisplayDevices`, `HeapQueryInformation`, `GetAdaptersInfo`
+2. Shellcode/Unpacking - `VirtualProtect`, `VirtualAlloc`
+3. Networking - `WSASocket`, `WSAloctl`, `WSASend`, `WSARecv`
 
 <br>
 Running `floss malware.exe` returned a whole bunch of garbage strings, indicating that the binary could be packed. Besides that, there were nothing else of interest in the floss output.
@@ -46,3 +46,10 @@ Q`Rj
 ...
 {% endhighlight %}
 
+### 2. Detonation
+Upon double-clicking the malware, this window appears... 😭😭❓. 
+
+![window](/assets/post_assets/temp/window.png)
+
+<br>
+Procmon didn't observe any abnormal operations. No DNS lookups, no files dropped. If the sample truly is malicious, there must've been some anti-analysis checks, or unmet conditions.
