@@ -28,10 +28,12 @@ The sample does, however, import many suspicious libraries - some of their uses 
 + EnumDisplayDevices
 + HeapQueryInformation
 
+<br>
 <b>Shellcode/Unpacking</b>
 + VirtualProtect
 + VirtualAlloc
 
+<br>
 <b>Networking</b>
 + WSASocket
 + WSAloctl
