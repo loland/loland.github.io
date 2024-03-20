@@ -1,0 +1,40 @@
+---
+layout: post
+title:  ""
+date:   2024-03-20 00:00:00 +0000
+categories: malware
+---
+
+Malware sample of unknown category from [MalwareBazaar](https://bazaar.abuse.ch/sample/5b30c309cd996a6ab8c1e2aad4e0d47a566f1cb8859677ac90f1253336451dd1). Just looking to perform a quick analysis and share any interesting findings.
+
+<br>
+### 1. Preliminary Analysis
+The malware comes wrapped with a strange icon: A reverse image search finds its origin from the Super Mario Bros assets.
+
+![icon](/assets/post_assets/temp/icon.png)
+
+<br>
+Pretty standard sections and permissions. Nothing unusual here.
+
+![sections](/assets/post_assets/temp/sections.png)
+
+<br>
+Running `floss malware.exe` produced lots of garbage strings, indicating that the binary could be packed. Besides that, nothing of interest in the floss output.
+
+{% highlight powershell %}
+...
+h8$I
+Y_^[
+PQQSVW
+Y_^[
+0SVW
+Y_^[
+v=h@
+h8$I
+v=h@
+h8$I
+v=h@
+h8$I
+Q`Rj
+...
+{% endhighlight %}
