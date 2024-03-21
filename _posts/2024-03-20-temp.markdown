@@ -53,3 +53,10 @@ Upon double-clicking the malware, this window appears... 😭😭❓.
 
 <br>
 Procmon didn't observe any abnormal operations. No DNS lookups, no files dropped. If the sample truly is malicious, there must've been some anti-analysis checks, or unmet conditions.
+
+But rather, I suspect this might be closer to a ctf challenge, or a hacking tool.
+
+### 3. Investigation
+It seems that the abovementioned anomalous WinAPIs `EnumDisplayMonitors`, `GetMonitorInfo`, `EnumDisplayDevices` were just part initializing the window - not for anti-debugging purposes, which I had initially thought.
+
+![monitor_init](/assets/post_assets/temp/monitor_init.png)
