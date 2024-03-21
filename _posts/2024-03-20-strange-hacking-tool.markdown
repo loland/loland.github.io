@@ -1,13 +1,12 @@
 ---
 layout: post
-title:  "Temp"
+title:  "Strange Hacking Tool"
 date:   2024-03-20 00:00:00 +0000
 categories: malware
 ---
 
 Malware sample of unknown category from [MalwareBazaar](https://bazaar.abuse.ch/sample/5b30c309cd996a6ab8c1e2aad4e0d47a566f1cb8859677ac90f1253336451dd1). Just looking to perform a quick analysis and share any interesting findings.
 
-<br>
 ### 1. Preliminary Analysis
 The malware came wrapped in a strange icon: A reverse image search finds its origin from a Super Mario Bros asset.
 
@@ -47,7 +46,7 @@ Q`Rj
 {% endhighlight %}
 
 ### 2. Detonation
-Upon double-clicking the malware, this window appears... 😭😭❓. 
+Upon double-clicking the malware, this window appears... 😭😭❓.
 
 ![window](/assets/post_assets/temp/window.png)
 
@@ -60,3 +59,18 @@ But rather, I suspect this might be closer to a ctf challenge, or a hacking tool
 It seems that the abovementioned anomalous WinAPIs `EnumDisplayMonitors`, `GetMonitorInfo`, `EnumDisplayDevices` were just part initializing the window - not for anti-debugging purposes, which I had initially thought.
 
 ![monitor_init](/assets/post_assets/temp/monitor_init.png)
+
+<br>
+Attempted to set up a netcat listener with `ncat -nvlp 80` to interact with the sample. It failed with an error (god forbid I know).
+
+![error](/assets/post_assets/temp/error.png)
+
+<br>
+It did generate some traffic
+
+![wireshark](/assets/post_assets/temp/wireshark.png)
+
+### 4. VirusTotal
+Despite multiple attempts to force malicious intent out of the sample, it seems that it was just a hacking tool. 
+
+![vt](/assets/post_assets/temp/vt.png)
