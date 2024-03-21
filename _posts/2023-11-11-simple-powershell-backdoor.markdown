@@ -5,7 +5,7 @@ date:   2023-11-11 00:00:00 +0000
 categories: malware
 ---
 
-Fresh Powershell sample once again from [MalwareBazaar](https://bazaar.abuse.ch/sample/399f0d3ef13f91a2ee84d27d8f2ea6662a77f62447f607122dac5efed13797c3/). Decided to perform just a quick analysis, due to lack of free time and a thirst to scratch my malware-itchy brain.
+Fresh Powershell sample once again from [MalwareBazaar](https://bazaar.abuse.ch/sample/399f0d3ef13f91a2ee84d27d8f2ea6662a77f62447f607122dac5efed13797c3/). Decided to perform just a quick analysis, due to lack of free time and a thirst for some raw wild malware.
 
 <br>
 ### 1. Deobfuscation
