@@ -71,6 +71,6 @@ There were some Wireshark DNS and LLMNR logs generated.
 ![wireshark](/assets/post_assets/strange-hacking-tool/wireshark.png)
 
 ### 4. VirusTotal
-Despite multiple attempts to force malicious intent out of the sample, it seems that it was just a hacking tool. 
+Despite multiple attempts to force malicious intent out of the sample, it seems like just a hacking tool. 
 
 ![vt](/assets/post_assets/strange-hacking-tool/vt.png)
