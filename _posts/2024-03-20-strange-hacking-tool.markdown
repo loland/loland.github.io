@@ -10,12 +10,12 @@ Malware sample of unknown category from [MalwareBazaar](https://bazaar.abuse.ch/
 ### 1. Preliminary Analysis
 The malware came wrapped in a strange icon: A reverse image search finds its origin from a Super Mario Bros asset.
 
-![icon](/assets/post_assets/temp/icon.png)
+![icon](/assets/post_assets/strange-hacking-tool/icon.png)
 
 <br>
 Pretty standard sections and permissions. Nothing unusual here.
 
-![sections](/assets/post_assets/temp/sections.png)
+![sections](/assets/post_assets/strange-hacking-tool/sections.png)
 
 <br>
 The sample does, however, import many suspicious libraries - some of their uses I can only make preliminary assumptions.
@@ -48,7 +48,7 @@ Q`Rj
 ### 2. Detonation
 Upon double-clicking the malware, this window appears... 😭😭❓.
 
-![window](/assets/post_assets/temp/window.png)
+![window](/assets/post_assets/strange-hacking-tool/window.png)
 
 <br>
 Procmon didn't observe any abnormal operations. No DNS lookups, no files dropped. If the sample truly is malicious, there must've been some anti-analysis checks, or unmet conditions.
@@ -58,19 +58,19 @@ But rather, I suspect this might be closer to a ctf challenge, or a hacking tool
 ### 3. Investigation
 It seems that the abovementioned anomalous WinAPIs `EnumDisplayMonitors`, `GetMonitorInfo`, `EnumDisplayDevices` were just part initializing the window - not for anti-debugging purposes, which I had initially thought.
 
-![monitor_init](/assets/post_assets/temp/monitor_init.png)
+![monitor_init](/assets/post_assets/strange-hacking-tool/monitor_init.png)
 
 <br>
 Attempted to set up a netcat listener with `ncat -nvlp 80` to interact with the sample. It failed with an error (god forbid I know).
 
-![error](/assets/post_assets/temp/error.png)
+![error](/assets/post_assets/strange-hacking-tool/error.png)
 
 <br>
 It did generate some traffic
 
-![wireshark](/assets/post_assets/temp/wireshark.png)
+![wireshark](/assets/post_assets/strange-hacking-tool/wireshark.png)
 
 ### 4. VirusTotal
-Despite multiple attempts to force malicious intent out of the sample, it seems that it was just a hacking tool. 
+Despite multiple atstrange-hacking-toolts to force malicious intent out of the sample, it seems that it was just a hacking tool. 
 
-![vt](/assets/post_assets/temp/vt.png)
+![vt](/assets/post_assets/strange-hacking-tool/vt.png)
